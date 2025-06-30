@@ -57,7 +57,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
                     {contributor.completed ? (
                         <CheckCircle className="w-4 h-4 text-accent" />
                     ) : (
-                        <Clock className="w-4 h-4 text-gray-500" />
+                        <Clock className="w-4 h-4 text-muted-foreground" />
                     )}
                     </div>
                 ))}

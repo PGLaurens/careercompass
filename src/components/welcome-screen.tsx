@@ -16,34 +16,34 @@ const WelcomeScreen = () => {
           <div className="w-20 h-20 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Target className="w-10 h-10 text-primary-foreground" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-4 font-headline text-balance">Career Compass</h1>
-          <p className="text-xl text-gray-600 text-balance">Discover the perfect career path with AI-powered guidance</p>
+          <h1 className="text-4xl font-bold text-foreground mb-4 font-headline text-balance">Career Compass</h1>
+          <p className="text-xl text-muted-foreground text-balance">Discover the perfect career path with AI-powered guidance</p>
         </div>
         
         <Card className="shadow-lg mb-8">
             <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 text-balance">Who are you today?</CardTitle>
+                <CardTitle className="text-2xl font-semibold text-foreground text-balance">Who are you today?</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="grid md:grid-cols-2 gap-6">
                     <Button
                     variant="outline"
                     onClick={() => setUserType('parent')}
-                    className="group p-6 h-auto border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/10 transition-all duration-200 flex flex-col"
+                    className="group p-6 h-auto border-2 rounded-xl hover:border-primary hover:bg-primary/10 transition-all duration-200 flex flex-col"
                     >
                     <Users className="w-12 h-12 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2 text-balance">I'm a Parent</h3>
-                    <p className="text-gray-600 text-sm normal-case text-wrap">Helping my child navigate their future with wisdom and support</p>
+                    <h3 className="text-lg font-semibold mb-2 text-balance">I'm a Parent</h3>
+                    <p className="text-muted-foreground text-sm normal-case text-wrap">Helping my child navigate their future with wisdom and support</p>
                     </Button>
                     
                     <Button
                     variant="outline"
                     onClick={() => setUserType('learner')}
-                    className="group p-6 h-auto border-2 border-gray-200 rounded-xl hover:border-accent hover:bg-accent/10 transition-all duration-200 flex flex-col"
+                    className="group p-6 h-auto border-2 rounded-xl hover:border-accent hover:bg-accent/10 transition-all duration-200 flex flex-col"
                     >
                     <GraduationCap className="w-12 h-12 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2 text-balance">I'm a Learner</h3>
-                    <p className="text-gray-600 text-sm normal-case text-wrap">Exploring my interests and discovering my path forward</p>
+                    <h3 className="text-lg font-semibold mb-2 text-balance">I'm a Learner</h3>
+                    <p className="text-muted-foreground text-sm normal-case text-wrap">Exploring my interests and discovering my path forward</p>
                     </Button>
                 </div>
             </CardContent>

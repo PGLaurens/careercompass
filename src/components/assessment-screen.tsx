@@ -84,12 +84,12 @@ const AssessmentScreen = () => {
             <div className="max-w-3xl w-full mx-auto">
                 <div className="mb-8">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-600 font-medium">Progress</span>
-                        <span className="text-sm text-gray-600">{questionsCompleted + 1} of {totalQuestions}</span>
+                        <span className="text-sm text-muted-foreground font-medium">Progress</span>
+                        <span className="text-sm text-muted-foreground">{questionsCompleted + 1} of {totalQuestions}</span>
                     </div>
                     <Progress value={((questionsCompleted + 1) / totalQuestions) * 100} className="h-2" />
                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-gray-500">Set {currentQuestionSet + 1} of {questionSets[userType].length}</span>
+                        <span className="text-xs text-muted-foreground">Set {currentQuestionSet + 1} of {questionSets[userType].length}</span>
                     </div>
                 </div>
 
@@ -126,14 +126,14 @@ const AssessmentScreen = () => {
                                     {activeQuestion.options.map((option, index) => (
                                         <Button key={index} variant="outline" onClick={() => handleNext(option)} className="w-full p-4 h-auto text-left justify-between border-2 rounded-lg group hover:border-primary/50">
                                              <span className="text-base normal-case text-foreground text-wrap">{option}</span>
-                                             <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary" />
+                                             <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                                         </Button>
                                     ))}
                                 </>
                             )}
                              {activeQuestion.type === 'ranking' && (
                                 <div>
-                                    <p className="text-sm text-gray-600 mb-4 text-wrap">Click to rank from most important to least important. The first click is most important.</p>
+                                    <p className="text-sm text-muted-foreground mb-4 text-wrap">Click to rank from most important to least important. The first click is most important.</p>
                                     <div className="flex flex-wrap gap-2 mb-4">
                                         {(responses[activeQuestion.id] || []).map((item: string, index: number) => (
                                             <div key={index} className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm flex items-center">
@@ -162,7 +162,7 @@ const AssessmentScreen = () => {
                             <Button variant="ghost" onClick={handlePrev} disabled={currentQuestion === 0 && currentQuestionSet === 0}>
                                 Previous
                             </Button>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-muted-foreground">
                                 Question {questionsCompleted + 1} of {totalQuestions}
                             </div>
                         </div>
