@@ -10,7 +10,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const CareerSuggestionsInputSchema = z.object({
+const CareerSuggestionsInputSchema = z.object({
   interests: z.array(z.string()).describe('The interests of the user.'),
   strengths: z.array(z.string()).describe('The strengths of the user.'),
   workEnvironment: z.string().describe('The preferred work environment of the user.'),
@@ -54,7 +54,7 @@ const InsightsSchema = z.object({
     leadershipStyle: z.string(),
 });
 
-export const CareerSuggestionsOutputSchema = z.object({
+const CareerSuggestionsOutputSchema = z.object({
   careerSuggestions: z.array(CareerSchema).length(3).describe('A list of exactly 3 career suggestions, from best match to third best match.'),
   insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers."),
 });
@@ -146,14 +146,6 @@ const careerSuggester = ai.definePrompt({
     `,
 });
 
-export async function generateCareerSuggestions(input: CareerSuggestionsInput): Promise<CareerSuggestionsOutput> {
-  const {output} = await careerSuggester(input);
-  if (!output) {
-    throw new Error('Failed to generate career suggestions from the AI model.');
-  }
-  return output;
-}
-
 const generateCareerSuggestionsFlow = ai.defineFlow(
     {
       name: 'generateCareerSuggestionsFlow',
@@ -161,7 +153,14 @@ const generateCareerSuggestionsFlow = ai.defineFlow(
       outputSchema: CareerSuggestionsOutputSchema,
     },
     async (input) => {
-      const result = await generateCareerSuggestions(input);
-      return result;
+      const {output} = await careerSuggester(input);
+      if (!output) {
+        throw new Error('Failed to generate career suggestions from the AI model.');
+      }
+      return output;
     }
 );
+
+export async function generateCareerSuggestions(input: CareerSuggestionsInput): Promise<CareerSuggestionsOutput> {
+  return await generateCareerSuggestionsFlow(input);
+}
