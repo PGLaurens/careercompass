@@ -95,20 +95,21 @@ const AssessmentScreen = () => {
 
                 <Card className="shadow-lg">
                     <CardHeader>
-                        <CardTitle className="text-2xl">{activeQuestion.question}</CardTitle>
-                        <CardDescription>{activeQuestion.subtitle}</CardDescription>
+                        <CardTitle className="text-2xl text-balance">{activeQuestion.question}</CardTitle>
+                        <CardDescription className="text-wrap">{activeQuestion.subtitle}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="mb-6 p-3 rounded-lg bg-primary/10 text-primary-foreground/80">
-                            <p className="text-sm text-blue-800">{toneMessage}</p>
+                            <p className="text-sm text-blue-800 text-wrap">{toneMessage}</p>
                         </div>
 
                         <div className="space-y-3">
                             {activeQuestion.type === 'multiselect' && (
                                 <>
+                                    <p className="text-sm text-muted-foreground mb-2">Select all that apply.</p>
                                     {activeQuestion.options.map((option, index) => (
                                         <Button key={index} variant="outline" onClick={() => handleMultiSelect(option)} className={`w-full p-4 h-auto text-left justify-between border-2 rounded-lg group ${(responses[activeQuestion.id] || []).includes(option) ? 'border-primary bg-primary/10' : 'hover:border-primary/50'}`}>
-                                            <span className={`text-base normal-case ${(responses[activeQuestion.id] || []).includes(option) ? 'text-primary-foreground/90 font-medium' : 'text-foreground'}`}>{option}</span>
+                                            <span className={`text-base normal-case text-wrap ${(responses[activeQuestion.id] || []).includes(option) ? 'text-primary-foreground/90 font-medium' : 'text-foreground'}`}>{option}</span>
                                             {(responses[activeQuestion.id] || []).includes(option) && <CheckCircle className="w-5 h-5 text-primary" />}
                                         </Button>
                                     ))}
@@ -120,20 +121,23 @@ const AssessmentScreen = () => {
                                 </>
                             )}
                             {activeQuestion.type === 'single' && (
-                                activeQuestion.options.map((option, index) => (
-                                    <Button key={index} variant="outline" onClick={() => handleNext(option)} className="w-full p-4 h-auto text-left justify-between border-2 rounded-lg group hover:border-primary/50">
-                                         <span className="text-base normal-case text-foreground">{option}</span>
-                                         <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary" />
-                                    </Button>
-                                ))
+                                <>
+                                    <p className="text-sm text-muted-foreground mb-2">Select one option.</p>
+                                    {activeQuestion.options.map((option, index) => (
+                                        <Button key={index} variant="outline" onClick={() => handleNext(option)} className="w-full p-4 h-auto text-left justify-between border-2 rounded-lg group hover:border-primary/50">
+                                             <span className="text-base normal-case text-foreground text-wrap">{option}</span>
+                                             <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary" />
+                                        </Button>
+                                    ))}
+                                </>
                             )}
                              {activeQuestion.type === 'ranking' && (
                                 <div>
-                                    <p className="text-sm text-gray-600 mb-4">Click to rank from most important to least important. The first click is most important.</p>
+                                    <p className="text-sm text-gray-600 mb-4 text-wrap">Click to rank from most important to least important. The first click is most important.</p>
                                     <div className="flex flex-wrap gap-2 mb-4">
                                         {(responses[activeQuestion.id] || []).map((item: string, index: number) => (
                                             <div key={index} className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm flex items-center">
-                                                <span>{index + 1}. {item}</span>
+                                                <span className="text-balance">{index + 1}. {item}</span>
                                             </div>
                                         ))}
                                     </div>

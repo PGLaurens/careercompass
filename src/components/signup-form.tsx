@@ -29,8 +29,8 @@ const SignupForm = () => {
           <div className="w-16 h-16 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <UserPlus className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl">Get Started</CardTitle>
-          <CardDescription>Create your free account to discover the perfect career path.</CardDescription>
+          <CardTitle className="text-2xl text-balance">Get Started</CardTitle>
+          <CardDescription className="text-wrap">Create your free account to discover the perfect career path.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -74,9 +74,9 @@ const SignupForm = () => {
             <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center mb-2">
                 <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                <span className="text-green-800 font-medium">100% Free</span>
+                <span className="text-green-800 font-medium text-balance">100% Free</span>
                 </div>
-                <p className="text-green-700 text-sm">No credit card required. Get comprehensive career guidance at no cost.</p>
+                <p className="text-green-700 text-sm text-wrap">No credit card required. Get comprehensive career guidance at no cost.</p>
             </div>
             
             <Button

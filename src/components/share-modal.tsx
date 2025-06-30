@@ -32,8 +32,8 @@ const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
           <div className="w-12 h-12 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <Share2 className="w-6 h-6 text-white" />
           </div>
-          <DialogTitle className="text-center text-xl">Get More Perspectives</DialogTitle>
-          <DialogDescription className="text-center">
+          <DialogTitle className="text-center text-xl text-balance">Get More Perspectives</DialogTitle>
+          <DialogDescription className="text-center text-wrap">
             Invite family and friends to contribute their insights about {sessionData.studentName || 'the student'}.
           </DialogDescription>
         </DialogHeader>
@@ -49,11 +49,11 @@ const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
             </div>
 
             <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-green-800 mb-2">Contributors So Far</h4>
+                <h4 className="font-semibold text-green-800 mb-2 text-balance">Contributors So Far</h4>
                 <div className="space-y-2">
                 {sessionData.contributors.map((contributor, index) => (
                     <div key={index} className="flex items-center justify-between text-sm">
-                    <span className="text-green-700">{contributor.name} ({contributor.relationship})</span>
+                    <span className="text-green-700 text-wrap">{contributor.name} ({contributor.relationship})</span>
                     {contributor.completed ? (
                         <CheckCircle className="w-4 h-4 text-green-500" />
                     ) : (
@@ -63,7 +63,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
                 ))}
                 </div>
                 {sessionData.contributors.length < 5 &&
-                    <p className="text-xs text-green-600 mt-2">
+                    <p className="text-xs text-green-600 mt-2 text-wrap">
                         {5 - sessionData.contributors.length} more contributors can be added.
                     </p>
                 }
