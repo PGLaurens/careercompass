@@ -38,7 +38,7 @@ const ResultsPage = () => {
 
     if (isContextLoading || isPending) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+            <div className="min-h-screen bg-background p-4">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-8 space-y-4">
                         <Skeleton className="h-16 w-16 rounded-full mx-auto" />
@@ -66,7 +66,7 @@ const ResultsPage = () => {
     
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-background flex items-center justify-center p-4">
                 <Alert variant="destructive" className="max-w-lg">
                     <Terminal className="h-4 w-4" />
                     <AlertTitle>Error Generating Results</AlertTitle>

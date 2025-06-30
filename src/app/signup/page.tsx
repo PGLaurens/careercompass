@@ -18,7 +18,7 @@ export default function SignupPage() {
 
     if (isLoading || !userType) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-background flex items-center justify-center p-4">
                 <div className="max-w-md w-full mx-auto space-y-6">
                     <Skeleton className="h-16 w-16 rounded-full mx-auto" />
                     <Skeleton className="h-8 w-48 mx-auto" />

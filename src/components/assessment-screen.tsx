@@ -80,7 +80,7 @@ const AssessmentScreen = () => {
         : "This is your journey of discovery. There are no wrong answers - just honest ones that will help us understand you better.";
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 flex items-center">
+        <div className="min-h-screen bg-background p-4 flex items-center">
             <div className="max-w-3xl w-full mx-auto">
                 <div className="mb-8">
                     <div className="flex items-center justify-between mb-2">
@@ -99,8 +99,8 @@ const AssessmentScreen = () => {
                         <CardDescription className="text-wrap">{activeQuestion.subtitle}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="mb-6 p-3 rounded-lg bg-primary/10 text-primary-foreground/80">
-                            <p className="text-sm text-blue-800 text-wrap">{toneMessage}</p>
+                        <div className="mb-6 p-3 rounded-lg bg-primary/10">
+                            <p className="text-sm text-primary-foreground/90 text-wrap">{toneMessage}</p>
                         </div>
 
                         <div className="space-y-3">
@@ -114,7 +114,7 @@ const AssessmentScreen = () => {
                                         </Button>
                                     ))}
                                     {(responses[activeQuestion.id] || []).length > 0 && (
-                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4 bg-gradient-to-r from-primary to-purple-600 text-white">
+                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4 bg-gradient-to-r from-primary to-accent text-primary-foreground">
                                             Continue with {(responses[activeQuestion.id] || []).length} selected
                                         </Button>
                                     )}
@@ -151,7 +151,7 @@ const AssessmentScreen = () => {
                                         ))}
                                     </div>
                                     {(responses[activeQuestion.id] || []).length === activeQuestion.options.length && (
-                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4 bg-gradient-to-r from-primary to-purple-600 text-white">
+                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4 bg-gradient-to-r from-primary to-accent text-primary-foreground">
                                             Continue with Ranking
                                         </Button>
                                     )}

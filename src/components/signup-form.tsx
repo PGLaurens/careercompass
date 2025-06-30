@@ -23,11 +23,11 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="max-w-md mx-auto w-full shadow-lg">
         <CardHeader className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <UserPlus className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
+            <UserPlus className="w-8 h-8 text-primary-foreground" />
           </div>
           <CardTitle className="text-2xl text-balance">Get Started</CardTitle>
           <CardDescription className="text-wrap">Create your free account to discover the perfect career path.</CardDescription>
@@ -71,18 +71,18 @@ const SignupForm = () => {
               </div>
             )}
             
-            <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="mt-6 p-4 bg-accent/10 border border-accent/20 rounded-lg">
                 <div className="flex items-center mb-2">
-                <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                <span className="text-green-800 font-medium text-balance">100% Free</span>
+                <CheckCircle className="w-5 h-5 text-accent mr-2" />
+                <span className="text-accent-foreground font-medium text-balance">100% Free</span>
                 </div>
-                <p className="text-green-700 text-sm text-wrap">No credit card required. Get comprehensive career guidance at no cost.</p>
+                <p className="text-accent-foreground/80 text-sm text-wrap">No credit card required. Get comprehensive career guidance at no cost.</p>
             </div>
             
             <Button
               type="submit"
               disabled={!canSubmit}
-              className="w-full mt-6 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
+              className="w-full mt-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground"
             >
               Start Career Discovery
             </Button>

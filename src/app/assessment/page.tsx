@@ -18,7 +18,7 @@ export default function AssessmentPage() {
 
     if (isLoading || !sessionData.sessionId) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-background flex items-center justify-center p-4">
                 <div className="max-w-3xl w-full mx-auto space-y-6">
                     <Skeleton className="h-8 w-1/2" />
                     <Skeleton className="h-4 w-full" />

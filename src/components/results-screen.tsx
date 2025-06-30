@@ -18,6 +18,7 @@ import {
   Download,
   Play,
   User,
+  Briefcase,
 } from 'lucide-react';
 
 interface ResultsScreenProps {
@@ -29,11 +30,11 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
   const [showShareModal, setShowShareModal] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <Star className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <Star className="w-8 h-8 text-primary-foreground" />
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-2 font-headline text-balance">
             {sessionData.studentName ? `${sessionData.studentName}'s` : 'Your'} Career Path Revealed!
@@ -44,7 +45,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
           <div className="flex justify-center mt-4">
             <div className="bg-white rounded-lg px-4 py-2 shadow-sm border">
               <div className="flex items-center space-x-2">
-                <UserCheck className="w-4 h-4 text-green-500" />
+                <UserCheck className="w-4 h-4 text-accent" />
                 <span className="text-sm text-gray-600">
                   {sessionData.contributors.filter(c => c.completed).length} of {sessionData.contributors.length} contributors completed
                 </span>
@@ -63,7 +64,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                         <p className="text-gray-600 mt-1 text-wrap">{results.primaryCareer.description}</p>
                     </div>
                     <div className="text-right flex-shrink-0 ml-4">
-                        <div className="text-3xl font-bold text-green-500">{results.primaryCareer.matchPercentage}%</div>
+                        <div className="text-3xl font-bold text-accent">{results.primaryCareer.matchPercentage}%</div>
                         <div className="text-sm text-gray-500">Match</div>
                     </div>
                 </div>
@@ -102,14 +103,14 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center text-balance"><BookOpen className="w-5 h-5 mr-2 text-primary" />Recommended High School Subjects</h3>
                     <div className="flex flex-wrap gap-2">
                       {results.primaryCareer.subjects?.map((subject, index) => (
-                        <span key={index} className="px-3 py-1 bg-primary/10 text-primary-foreground/80 text-blue-800 rounded-full text-sm font-medium text-balance">{subject}</span>
+                        <span key={index} className="px-3 py-1 bg-primary/10 text-primary-foreground/90 text-sm font-medium rounded-full text-balance">{subject}</span>
                       ))}
                     </div>
                   </div>
-                  <div className="grid md:grid-cols-3 gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                    <div><h4 className="font-semibold text-green-800 text-balance">Expected Salary</h4><p className="text-green-700 text-sm text-wrap">{results.primaryCareer.salary}</p></div>
-                    <div><h4 className="font-semibold text-green-800 text-balance">Growth Outlook</h4><p className="text-green-700 text-sm text-wrap">{results.primaryCareer.growth}</p></div>
-                    <div><h4 className="font-semibold text-green-800 text-balance">Environment</h4><p className="text-green-700 text-sm text-wrap">{results.primaryCareer.workEnvironment}</p></div>
+                  <div className="grid md:grid-cols-3 gap-4 p-4 bg-accent/10 rounded-lg border border-accent/20">
+                    <div><h4 className="font-semibold text-accent-foreground text-balance">Expected Salary</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.salary}</p></div>
+                    <div><h4 className="font-semibold text-accent-foreground text-balance">Growth Outlook</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.growth}</p></div>
+                    <div><h4 className="font-semibold text-accent-foreground text-balance">Environment</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.workEnvironment}</p></div>
                   </div>
                 </div>
               </CardContent>
@@ -149,12 +150,12 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </CardContent>
             </Card>
             <Card className="shadow-lg">
-                <CardHeader><h3 className="text-lg font-semibold text-gray-800 flex items-center text-balance"><Heart className="w-5 h-5 mr-2 text-purple-500" />Balanced Life</h3></CardHeader>
+                <CardHeader><h3 className="text-lg font-semibold text-gray-800 flex items-center text-balance"><Heart className="w-5 h-5 mr-2 text-accent" />Work Hard, Play Hard</h3></CardHeader>
                 <CardContent>
-                    <p className="text-sm text-gray-600 mb-3 text-wrap">Hobbies that complement your career:</p>
+                    <p className="text-sm text-gray-600 mb-3 text-wrap">A balanced life is key. Hobbies that complement this career path:</p>
                     <div className="space-y-2">
                         {results.primaryCareer.hobbies?.map((hobby, index) => (
-                            <div key={index} className="flex items-center text-sm text-gray-700 text-wrap"><div className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></div>{hobby}</div>
+                            <div key={index} className="flex items-center text-sm text-gray-700 text-wrap"><div className="w-1.5 h-1.5 bg-accent rounded-full mr-2"></div>{hobby}</div>
                         ))}
                     </div>
                 </CardContent>
@@ -162,12 +163,12 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
              <Card className="shadow-lg">
                 <CardHeader><h3 className="text-lg font-semibold text-gray-800 flex items-center text-balance"><Share2 className="w-5 h-5 mr-2 text-primary" />Share & Save</h3></CardHeader>
                 <CardContent className="space-y-3">
-                    <Button onClick={() => setShowShareModal(true)} className="w-full bg-gradient-to-r from-primary to-purple-600 text-white"><Plus className="w-4 h-4 mr-2" />Invite More Contributors</Button>
+                    <Button onClick={() => setShowShareModal(true)} className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground"><Plus className="w-4 h-4 mr-2" />Invite More Contributors</Button>
                     <Button variant="outline" className="w-full"><Download className="w-4 h-4 mr-2" />Download Full Report</Button>
                 </CardContent>
             </Card>
              <Card className="shadow-lg">
-                <CardHeader><h3 className="text-lg font-semibold text-gray-800 flex items-center text-balance"><Play className="w-5 h-5 mr-2 text-green-500" />Explore Further</h3></CardHeader>
+                <CardHeader><h3 className="text-lg font-semibold text-gray-800 flex items-center text-balance"><Play className="w-5 h-5 mr-2 text-accent" />Explore Further</h3></CardHeader>
                 <CardContent className="space-y-3">
                     <Button variant="outline" className="w-full">Watch Career Videos</Button>
                     <Button variant="outline" className="w-full">Find Online Courses</Button>
