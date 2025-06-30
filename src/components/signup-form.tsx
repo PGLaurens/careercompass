@@ -124,10 +124,10 @@ const SignupForm = () => {
             
             <div className="!mt-6 p-4 bg-accent/40 border border-accent/60 rounded-lg text-left">
                 <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                <span className="text-green-800 font-semibold text-balance">100% Free</span>
+                <CheckCircle className="w-5 h-5 text-accent-foreground mr-2" />
+                <span className="text-accent-foreground font-semibold text-balance">100% Free</span>
                 </div>
-                <p className="text-green-800/80 text-sm text-wrap mt-1">
+                <p className="text-accent-foreground/80 text-sm text-wrap mt-1">
                   No credit card required. Get comprehensive career guidance at no cost.
                 </p>
             </div>
