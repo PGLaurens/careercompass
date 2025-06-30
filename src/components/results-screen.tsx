@@ -103,14 +103,14 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center text-balance"><BookOpen className="w-5 h-5 mr-2 text-primary" />Recommended High School Subjects</h3>
                     <div className="flex flex-wrap gap-2">
                       {results.primaryCareer.subjects?.map((subject, index) => (
-                        <span key={index} className="px-3 py-1 bg-primary/10 text-primary-foreground/90 text-sm font-medium rounded-full text-balance">{subject}</span>
+                        <span key={index} className="px-3 py-1 bg-primary text-primary-foreground text-sm font-medium rounded-full text-balance">{subject}</span>
                       ))}
                     </div>
                   </div>
-                  <div className="grid md:grid-cols-3 gap-4 p-4 bg-accent/10 rounded-lg border border-accent/20">
-                    <div><h4 className="font-semibold text-accent-foreground text-balance">Expected Salary</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.salary}</p></div>
-                    <div><h4 className="font-semibold text-accent-foreground text-balance">Growth Outlook</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.growth}</p></div>
-                    <div><h4 className="font-semibold text-accent-foreground text-balance">Environment</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.workEnvironment}</p></div>
+                  <div className="grid md:grid-cols-3 gap-4 p-4 bg-accent text-accent-foreground rounded-lg">
+                    <div><h4 className="font-semibold text-balance">Expected Salary</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.salary}</p></div>
+                    <div><h4 className="font-semibold text-balance">Growth Outlook</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.growth}</p></div>
+                    <div><h4 className="font-semibold text-balance">Environment</h4><p className="text-accent-foreground/80 text-sm text-wrap">{results.primaryCareer.workEnvironment}</p></div>
                   </div>
                 </div>
               </CardContent>

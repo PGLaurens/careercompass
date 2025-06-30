@@ -133,12 +133,12 @@ const careerSuggester = ai.definePrompt({
     1.  **Analyze User Profile:** Deeply analyze all provided inputs: interests, strengths, work environment preference, personality, values, and learning style.
     2.  **Generate Insights:** First, create the 'insights' object. Synthesize the inputs into a cohesive personality profile, including strengths, motivations, and ideal work style.
     3.  **Brainstorm Careers:** Based on the user profile, brainstorm a list of potential careers. Select the top three best matches.
-    4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. This includes:
+    4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. It is **critical** that the \`description\`, \`reasoning\`, \`timeline\`, \`subjects\`, \`hobbies\`, and \`dailyTasks\` are all highly relevant and specific to the career \`title\`. Do not use generic information. This includes:
         *   \`title\`, \`description\`, \`reasoning\`, \`matchPercentage\`.
         *   A detailed \`timeline\` with at least 3-4 stages.
-        *   A list of recommended \`subjects\`.
-        *   A list of \`hobbies\` that promote a "work hard, play hard" lifestyle, connecting to the career or providing balance.
-        *   \`growth\` outlook, \`workEnvironment\`, and \`dailyTasks\`.
+        *   A list of recommended \`subjects\` that are typically required or highly beneficial for that career.
+        *   A list of \`hobbies\` that promote a "work hard, play hard" lifestyle. These hobbies should complement the likely lifestyle and interests of someone in that career, providing a healthy work-life balance. For example, a high-stress, high-income job might have hobbies related to relaxation or travel.
+        *   \`growth\` outlook, \`workEnvironment\`, and a list of specific, common \`dailyTasks\`.
     5.  **Use Tools for Localization (IMPORTANT):**
         *   For EACH of the three career suggestions, you MUST use the \`getSalaryData\` tool to get a localized salary. Pass the career title and the user's country to the tool.
         *   After generating the ideal list of recommended \`subjects\` for the PRIMARY career suggestion, you MUST use the \`getSubjectAvailability\` tool to check which are available. In the final output, only include the subjects the tool returns as 'available' in the \`subjects\` array for that primary career. For the other two careers, you can list the ideal subjects without verification.
