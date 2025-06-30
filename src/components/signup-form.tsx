@@ -6,7 +6,7 @@ import { useCareerCompass } from '@/context/career-compass-context';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const SignupForm = () => {
   const { userType, startSession } = useCareerCompass();
@@ -35,18 +35,20 @@ const SignupForm = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="max-w-md mx-auto w-full shadow-lg">
-        <CardHeader className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
-            <UserPlus className="w-8 h-8 text-primary-foreground" />
+      <Card className="max-w-md mx-auto w-full shadow-2xl rounded-2xl">
+        <CardHeader className="text-center items-center pt-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <UserPlus className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl text-balance">Get Started</CardTitle>
-          <CardDescription className="text-wrap">Create your free account to discover the perfect career path.</CardDescription>
+          <CardTitle className="text-3xl font-bold">Get Started</CardTitle>
+          <CardDescription className="text-muted-foreground pt-1 text-balance">
+            Create your free account to discover your perfect career path.
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-8 pb-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             {userType === 'parent' && (
-              <div className="space-y-2">
+              <div className="space-y-1.5 text-left">
                 <Label htmlFor="studentName">Student's Name</Label>
                 <Input
                   id="studentName"
@@ -55,10 +57,11 @@ const SignupForm = () => {
                   onChange={(e) => setStudentName(e.target.value)}
                   placeholder="Enter your child's name"
                   required
+                  className="bg-secondary/30 border-border"
                 />
               </div>
             )}
-            <div className="space-y-2">
+            <div className="space-y-1.5 text-left">
               <Label htmlFor="name">Your Name</Label>
               <Input
                 id="name"
@@ -67,9 +70,10 @@ const SignupForm = () => {
                 onChange={handleChange}
                 placeholder="Enter your full name"
                 required
+                className="bg-secondary/30 border-border"
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5 text-left">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
@@ -78,9 +82,10 @@ const SignupForm = () => {
                 onChange={handleChange}
                 placeholder="Enter your email"
                 required
+                className="bg-secondary/30 border-border"
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5 text-left">
               <Label htmlFor="country">Country</Label>
               <Input
                 id="country"
@@ -89,9 +94,10 @@ const SignupForm = () => {
                 onChange={handleChange}
                 placeholder="e.g., USA, Canada"
                 required
+                className="bg-secondary/30 border-border"
               />
             </div>
-             <div className="space-y-2">
+             <div className="space-y-1.5 text-left">
               <Label htmlFor="region">State / Province</Label>
               <Input
                 id="region"
@@ -100,9 +106,10 @@ const SignupForm = () => {
                 onChange={handleChange}
                 placeholder="e.g., California, Ontario"
                 required
+                className="bg-secondary/30 border-border"
               />
             </div>
-             <div className="space-y-2">
+             <div className="space-y-1.5 text-left">
               <Label htmlFor="highSchool">High School Name</Label>
               <Input
                 id="highSchool"
@@ -111,21 +118,24 @@ const SignupForm = () => {
                 onChange={handleChange}
                 placeholder="Enter the name of the high school"
                 required
+                className="bg-secondary/30 border-border"
               />
             </div>
             
-            <div className="mt-6 p-4 bg-accent/10 border border-accent/20 rounded-lg">
-                <div className="flex items-center mb-2">
-                <CheckCircle className="w-5 h-5 text-accent mr-2" />
-                <span className="text-accent-foreground font-medium text-balance">100% Free</span>
+            <div className="!mt-6 p-4 bg-accent/40 border border-accent/60 rounded-lg text-left">
+                <div className="flex items-center">
+                <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                <span className="text-green-800 font-semibold text-balance">100% Free</span>
                 </div>
-                <p className="text-accent-foreground/80 text-sm text-wrap">No credit card required. Get comprehensive career guidance at no cost.</p>
+                <p className="text-green-800/80 text-sm text-wrap mt-1">
+                  No credit card required. Get comprehensive career guidance at no cost.
+                </p>
             </div>
             
             <Button
               type="submit"
               disabled={!canSubmit}
-              className="w-full mt-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground"
+              className="w-full !mt-6 text-lg h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold rounded-lg"
             >
               Start Career Discovery
             </Button>
