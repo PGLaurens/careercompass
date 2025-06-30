@@ -10,15 +10,26 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 const SignupForm = () => {
   const { userType, startSession } = useCareerCompass();
-  const [userInfo, setUserInfo] = useState({ name: '', email: '' });
+  const [userInfo, setUserInfo] = useState({ 
+    name: '', 
+    email: '',
+    country: '',
+    region: '',
+    highSchool: '',
+  });
   const [studentName, setStudentName] = useState('');
 
-  const canSubmit = userInfo.name && userInfo.email && (userType === 'learner' || (userType === 'parent' && studentName));
+  const canSubmit = userInfo.name && userInfo.email && userInfo.country && userInfo.region && userInfo.highSchool && (userType === 'learner' || (userType === 'parent' && studentName));
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setUserInfo(prev => ({ ...prev, [id]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (canSubmit) {
-      startSession(userInfo.name, userInfo.email, studentName);
+      startSession(userInfo.name, userInfo.email, studentName, userInfo.country, userInfo.region, userInfo.highSchool);
     }
   };
 
@@ -34,29 +45,6 @@ const SignupForm = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Your Name</Label>
-              <Input
-                id="name"
-                type="text"
-                value={userInfo.name}
-                onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
-                placeholder="Enter your full name"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={userInfo.email}
-                onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-            
             {userType === 'parent' && (
               <div className="space-y-2">
                 <Label htmlFor="studentName">Student's Name</Label>
@@ -70,6 +58,61 @@ const SignupForm = () => {
                 />
               </div>
             )}
+            <div className="space-y-2">
+              <Label htmlFor="name">Your Name</Label>
+              <Input
+                id="name"
+                type="text"
+                value={userInfo.name}
+                onChange={handleChange}
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                value={userInfo.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <Input
+                id="country"
+                type="text"
+                value={userInfo.country}
+                onChange={handleChange}
+                placeholder="e.g., USA, Canada"
+                required
+              />
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="region">State / Province</Label>
+              <Input
+                id="region"
+                type="text"
+                value={userInfo.region}
+                onChange={handleChange}
+                placeholder="e.g., California, Ontario"
+                required
+              />
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="highSchool">High School Name</Label>
+              <Input
+                id="highSchool"
+                type="text"
+                value={userInfo.highSchool}
+                onChange={handleChange}
+                placeholder="Enter the name of the high school"
+                required
+              />
+            </div>
             
             <div className="mt-6 p-4 bg-accent/10 border border-accent/20 rounded-lg">
                 <div className="flex items-center mb-2">

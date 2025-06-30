@@ -26,7 +26,13 @@ const ResultsPage = () => {
     useEffect(() => {
         if (sessionData.sessionId && Object.keys(responses).length > 0 && !results) {
             startTransition(async () => {
-                const result = await getCareerSuggestionsAction({ responses });
+                const actionInput = { 
+                    responses, 
+                    country: sessionData.country,
+                    region: sessionData.region,
+                    highSchool: sessionData.highSchool
+                };
+                const result = await getCareerSuggestionsAction(actionInput);
                 if (result.success) {
                     setResults(result.data);
                 } else {
@@ -34,7 +40,7 @@ const ResultsPage = () => {
                 }
             });
         }
-    }, [sessionData.sessionId, responses, results]);
+    }, [sessionData, responses, results, router]); 
 
     if (isContextLoading || isPending) {
         return (
@@ -83,7 +89,15 @@ const ResultsPage = () => {
         return <ResultsScreen results={results} />;
     }
 
-    return null; 
+    if (!sessionData.sessionId) {
+        return null;
+    }
+
+    return (
+         <div className="min-h-screen bg-background flex items-center justify-center p-4">
+            <p>Generating your results...</p>
+         </div>
+    );
 };
 
 export default ResultsPage;

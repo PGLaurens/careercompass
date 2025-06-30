@@ -16,6 +16,9 @@ export interface SessionData {
     relationship: string;
     responses: Record<string, any>;
   }[];
+  country: string;
+  region: string;
+  highSchool: string;
 }
 
 export interface Question {

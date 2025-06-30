@@ -11,7 +11,7 @@ interface CareerCompassContextType {
   setSessionData: React.Dispatch<React.SetStateAction<SessionData>>;
   responses: Record<string, any>;
   setResponses: React.Dispatch<React.SetStateAction<Record<string, any>>>;
-  startSession: (name: string, email: string, studentName?: string) => void;
+  startSession: (name: string, email: string, studentName: string, country: string, region: string, highSchool: string) => void;
   addContributor: (contributor: Contributor) => void;
   resetSession: () => void;
   isLoading: boolean;
@@ -24,6 +24,9 @@ const initialState: SessionData = {
   sessionId: '',
   contributors: [],
   allResponses: [],
+  country: '',
+  region: '',
+  highSchool: '',
 };
 
 export const CareerCompassProvider = ({ children }: { children: ReactNode }) => {
@@ -41,7 +44,7 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
       if (savedState) {
         const { userType, sessionData, responses } = JSON.parse(savedState);
         setUserTypeState(userType);
-        setSessionData(sessionData);
+        setSessionData(sessionData || initialState); // Ensure sessionData is not null
         setResponses(responses || {});
       }
     } catch (error) {
@@ -68,7 +71,7 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
     router.push(`/signup?userType=${newUserType}`);
   };
 
-  const startSession = (name: string, email: string, studentName: string = '') => {
+  const startSession = (name: string, email: string, studentName: string = '', country: string, region: string, highSchool: string) => {
     const isParent = userType === 'parent';
     const newSessionData: SessionData = {
       studentName: isParent ? studentName : name,
@@ -79,7 +82,10 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
         relationship: isParent ? 'Parent' : 'Self',
         completed: false
       }],
-      allResponses: []
+      allResponses: [],
+      country,
+      region,
+      highSchool,
     };
     setSessionData(newSessionData);
     router.push('/assessment');
