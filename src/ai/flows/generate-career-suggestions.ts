@@ -78,6 +78,7 @@ const getSalaryData = ai.defineTool(
         "USA": { base: 100000, currency: "USD", symbol: "$" },
         "UK": { base: 60000, currency: "GBP", symbol: "£" },
         "Australia": { base: 95000, currency: "AUD", symbol: "$" },
+        "South Africa": { base: 600000, currency: "ZAR", symbol: "R" },
         "default": { base: 70000, currency: "USD", symbol: "$" }
       };
       const countryData = baseSalaries[country] || baseSalaries.default;
@@ -135,7 +136,7 @@ const careerSuggester = ai.definePrompt({
     3.  **Brainstorm Careers:** Based on the user profile, brainstorm a list of potential careers. Select the top three best matches.
     4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. It is **critical** that the \`description\`, \`reasoning\`, \`timeline\`, \`subjects\`, \`hobbies\`, and \`dailyTasks\` are all highly relevant and specific to the career \`title\`. Do not use generic information. This includes:
         *   \`title\`, \`description\`, \`reasoning\`, \`matchPercentage\`.
-        *   A detailed \`timeline\` with at least 3-4 stages.
+        *   A detailed \`timeline\` with at least 4-5 stages, starting from high school and progressing through education, junior, mid-level, and senior roles.
         *   A list of recommended \`subjects\` that are typically required or highly beneficial for that career.
         *   A list of \`hobbies\` that promote a "work hard, play hard" lifestyle. These hobbies should complement the likely lifestyle and interests of someone in that career, providing a healthy work-life balance. For example, a high-stress, high-income job might have hobbies related to relaxation or travel.
         *   \`growth\` outlook, \`workEnvironment\`, and a list of specific, common \`dailyTasks\`.
