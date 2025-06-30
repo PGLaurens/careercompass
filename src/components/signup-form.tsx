@@ -37,8 +37,8 @@ const SignupForm = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="max-w-md mx-auto w-full shadow-2xl rounded-2xl">
         <CardHeader className="text-center items-center pt-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-cyan-600 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <UserPlus className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+            <UserPlus className="w-8 h-8 text-primary-foreground" />
           </div>
           <CardTitle className="text-3xl font-bold">Get Started</CardTitle>
           <CardDescription className="text-muted-foreground pt-1 text-balance">
@@ -135,7 +135,7 @@ const SignupForm = () => {
             <Button
               type="submit"
               disabled={!canSubmit}
-              className="w-full !mt-6 text-lg h-12 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white font-semibold rounded-lg"
+              className="w-full !mt-6 text-lg h-12 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold rounded-lg"
             >
               Start Career Discovery
             </Button>

@@ -114,7 +114,7 @@ const AssessmentScreen = () => {
                                         </Button>
                                     ))}
                                     {(responses[activeQuestion.id] || []).length > 0 && (
-                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4">
                                             Continue with {(responses[activeQuestion.id] || []).length} selected
                                         </Button>
                                     )}
@@ -151,7 +151,7 @@ const AssessmentScreen = () => {
                                         ))}
                                     </div>
                                     {(responses[activeQuestion.id] || []).length === activeQuestion.options.length && (
-                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4">
                                             Continue with Ranking
                                         </Button>
                                     )}

@@ -33,7 +33,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Star className="w-8 h-8 text-primary-foreground" />
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-2 font-headline text-balance">
@@ -163,7 +163,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
              <Card className="shadow-lg">
                 <CardHeader><h3 className="text-lg font-semibold text-foreground flex items-center text-balance"><Share2 className="w-5 h-5 mr-2 text-primary" />Share & Save</h3></CardHeader>
                 <CardContent className="space-y-3">
-                    <Button onClick={() => setShowShareModal(true)} className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground"><Plus className="w-4 h-4 mr-2" />Invite More Contributors</Button>
+                    <Button onClick={() => setShowShareModal(true)} className="w-full"><Plus className="w-4 h-4 mr-2" />Invite More Contributors</Button>
                     <Button variant="outline" className="w-full"><Download className="w-4 h-4 mr-2" />Download Full Report</Button>
                 </CardContent>
             </Card>

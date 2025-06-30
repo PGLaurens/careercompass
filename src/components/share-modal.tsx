@@ -29,7 +29,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
     <Dialog open onOpenChange={setShow}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <Share2 className="w-6 h-6 text-primary-foreground" />
           </div>
           <DialogTitle className="text-center text-xl text-balance">Get More Perspectives</DialogTitle>
