@@ -11,7 +11,7 @@ const WelcomeScreen = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <header className="text-center mb-10">
-        <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+        <div className="w-20 h-20 bg-gradient-to-br from-cyan-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
           <Target className="w-10 h-10 text-white" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 font-headline text-balance">
