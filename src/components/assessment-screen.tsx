@@ -7,7 +7,7 @@ import { questionSets } from '@/lib/questions';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, ChevronRight } from 'lucide-react';
+import { CheckCircle, ChevronRight, ArrowLeft } from 'lucide-react';
 
 const AssessmentScreen = () => {
     const { userType, responses, setResponses, sessionData, setSessionData } = useCareerCompass();
@@ -75,57 +75,64 @@ const AssessmentScreen = () => {
         setResponses({ ...responses, [activeQuestion.id]: newAnswers });
     };
 
-    const toneMessage = userType === 'parent'
-        ? "We understand this is an important decision for your child's future. Take your time and trust your parental instincts."
-        : "This is your journey of discovery. There are no wrong answers - just honest ones that will help us understand you better.";
+    const getSelectionPrompt = () => {
+        switch (activeQuestion.type) {
+            case 'multiselect':
+                return "Select all that apply.";
+            case 'single':
+                return "Select one option.";
+            case 'ranking':
+                return "Click to rank from most to least important.";
+            default:
+                return "";
+        }
+    }
 
     return (
-        <div className="min-h-screen bg-background p-4 flex items-center">
+        <div className="min-h-screen bg-background p-4 flex flex-col justify-center">
             <div className="max-w-3xl w-full mx-auto">
                 <div className="mb-8">
+                     <Button variant="ghost" onClick={() => router.back()} className="mb-4 text-muted-foreground">
+                        <ArrowLeft className="w-4 h-4 mr-2" /> Back
+                     </Button>
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-sm text-muted-foreground font-medium">Progress</span>
                         <span className="text-sm text-muted-foreground">{questionsCompleted + 1} of {totalQuestions}</span>
                     </div>
                     <Progress value={((questionsCompleted + 1) / totalQuestions) * 100} className="h-2" />
-                     <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-muted-foreground">Set {currentQuestionSet + 1} of {questionSets[userType].length}</span>
-                    </div>
                 </div>
 
-                <Card className="shadow-lg">
+                <Card className="shadow-none border-none bg-transparent">
                     <CardHeader>
-                        <CardTitle className="text-2xl text-balance">{activeQuestion.question}</CardTitle>
-                        <CardDescription className="text-wrap">{activeQuestion.subtitle}</CardDescription>
+                        <CardTitle className="text-2xl lg:text-3xl font-bold text-balance">{activeQuestion.question}</CardTitle>
+                        <CardDescription className="text-base">{activeQuestion.subtitle}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="mb-6 p-3 rounded-lg bg-primary/10">
-                            <p className="text-sm text-primary-foreground/90 text-wrap">{toneMessage}</p>
-                        </div>
+                        <p className="text-sm font-medium text-primary mb-4">{getSelectionPrompt()}</p>
 
                         <div className="space-y-3">
                             {activeQuestion.type === 'multiselect' && (
                                 <>
-                                    <p className="text-sm text-muted-foreground mb-2">Select all that apply.</p>
                                     {activeQuestion.options.map((option, index) => (
-                                        <Button key={index} variant="outline" onClick={() => handleMultiSelect(option)} className={`w-full p-4 h-auto text-left justify-between border-2 rounded-lg group ${(responses[activeQuestion.id] || []).includes(option) ? 'border-primary bg-primary/10' : 'hover:border-primary/50'}`}>
-                                            <span className={`text-base normal-case text-wrap ${(responses[activeQuestion.id] || []).includes(option) ? 'text-primary-foreground/90 font-medium' : 'text-foreground'}`}>{option}</span>
+                                        <Button key={index} variant="outline" onClick={() => handleMultiSelect(option)} className={`w-full p-4 h-auto text-left justify-between border-2 rounded-lg group text-base ${(responses[activeQuestion.id] || []).includes(option) ? 'border-primary bg-accent text-accent-foreground' : 'hover:border-primary/50'}`}>
+                                            <span className="text-wrap normal-case font-normal">
+                                                {option}
+                                            </span>
                                             {(responses[activeQuestion.id] || []).includes(option) && <CheckCircle className="w-5 h-5 text-primary" />}
                                         </Button>
                                     ))}
                                     {(responses[activeQuestion.id] || []).length > 0 && (
-                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4">
-                                            Continue with {(responses[activeQuestion.id] || []).length} selected
+                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-6">
+                                            Continue
                                         </Button>
                                     )}
                                 </>
                             )}
                             {activeQuestion.type === 'single' && (
                                 <>
-                                    <p className="text-sm text-muted-foreground mb-2">Select one option.</p>
                                     {activeQuestion.options.map((option, index) => (
-                                        <Button key={index} variant="outline" onClick={() => handleNext(option)} className="w-full p-4 h-auto text-left justify-between border-2 rounded-lg group hover:border-primary/50">
-                                             <span className="text-base normal-case text-foreground text-wrap">{option}</span>
+                                        <Button key={index} variant="outline" onClick={() => handleNext(option)} className="w-full p-4 h-auto text-left justify-between border-2 rounded-lg group hover:border-primary/50 text-base">
+                                             <span className="text-wrap normal-case font-normal">{option}</span>
                                              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                                         </Button>
                                     ))}
@@ -133,11 +140,10 @@ const AssessmentScreen = () => {
                             )}
                              {activeQuestion.type === 'ranking' && (
                                 <div>
-                                    <p className="text-sm text-muted-foreground mb-4 text-wrap">Click to rank from most important to least important. The first click is most important.</p>
-                                    <div className="flex flex-wrap gap-2 mb-4">
+                                    <div className="flex flex-wrap gap-2 mb-4 min-h-[3rem]">
                                         {(responses[activeQuestion.id] || []).map((item: string, index: number) => (
-                                            <div key={index} className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm flex items-center">
-                                                <span className="text-balance">{index + 1}. {item}</span>
+                                            <div key={index} className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm flex items-center shadow">
+                                                <span>{index + 1}. {item}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -151,8 +157,8 @@ const AssessmentScreen = () => {
                                         ))}
                                     </div>
                                     {(responses[activeQuestion.id] || []).length === activeQuestion.options.length && (
-                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-4">
-                                            Continue with Ranking
+                                        <Button onClick={() => handleNext(responses[activeQuestion.id])} className="w-full mt-6">
+                                            Continue
                                         </Button>
                                     )}
                                 </div>
@@ -162,9 +168,6 @@ const AssessmentScreen = () => {
                             <Button variant="ghost" onClick={handlePrev} disabled={currentQuestion === 0 && currentQuestionSet === 0}>
                                 Previous
                             </Button>
-                            <div className="text-sm text-muted-foreground">
-                                Question {questionsCompleted + 1} of {totalQuestions}
-                            </div>
                         </div>
                     </CardContent>
                 </Card>

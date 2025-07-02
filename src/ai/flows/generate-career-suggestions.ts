@@ -54,9 +54,17 @@ const InsightsSchema = z.object({
     leadershipStyle: z.string(),
 });
 
+const FeaturedProfessionalSchema = z.object({
+    name: z.string().describe("A realistic-sounding full name for the fictional professional."),
+    title: z.string().describe("The job title of the professional, matching the primary career suggestion."),
+    bio: z.string().describe("A short, inspiring bio (1-2 sentences) about how this professional balances their career with their passions or hobbies."),
+});
+
+
 const CareerSuggestionsOutputSchema = z.object({
   careerSuggestions: z.array(CareerSchema).length(3).describe('A list of exactly 3 career suggestions, from best match to third best match.'),
   insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers."),
+  featuredProfessional: FeaturedProfessionalSchema.describe("A profile of a fictional professional representing the primary career path."),
 });
 export type CareerSuggestionsOutput = z.infer<typeof CareerSuggestionsOutputSchema>;
 
@@ -72,7 +80,6 @@ const getSalaryData = ai.defineTool(
       outputSchema: z.string(),
     },
     async ({ careerTitle, country }) => {
-      // This is a mock implementation. In a real app, you would query an API.
       const baseSalaries: Record<string, { base: number, currency: string, symbol: string }> = {
         "Canada": { base: 90000, currency: "CAD", symbol: "$" },
         "USA": { base: 100000, currency: "USD", symbol: "$" },
@@ -86,7 +93,7 @@ const getSalaryData = ai.defineTool(
       const countryKey = Object.keys(baseSalaries).find(k => k.toLowerCase() === normalizedCountry);
       const countryData = countryKey ? baseSalaries[countryKey] : baseSalaries.default;
 
-      const salary = countryData.base + (careerTitle.length % 5) * 5000; // a little variance
+      const salary = countryData.base + (careerTitle.length % 5) * 5000;
       const low = Math.round(salary * 0.8 / 1000) * 1000;
       const high = Math.round(salary * 1.5 / 1000) * 1000;
       return `${countryData.symbol}${low.toLocaleString()} - ${countryData.symbol}${high.toLocaleString()} ${countryData.currency}`;
@@ -109,9 +116,7 @@ const getSubjectAvailability = ai.defineTool(
       }),
     },
     async ({ subjects }) => {
-      // Mock implementation. In a real app, this would be a complex lookup.
-      // For this mock, we'll assume common subjects are always available and specialized ones are sometimes not.
-      const common = ["Mathematics", "English", "Physics", "Biology", "Chemistry", "History", "Art/Design", "Business Studies", "Physical Education"];
+      const common = ["Mathematics", "English", "Physics", "Biology", "Chemistry", "History", "Art/Design", "Business Studies", "Physical Education", "Computer Science", "Geography", "Social Studies", "Technology"];
       const available: string[] = [];
       const unavailable: string[] = [];
       subjects.forEach(subject => {
@@ -147,7 +152,8 @@ const careerSuggester = ai.definePrompt({
     5.  **Use Tools for Localization (IMPORTANT):**
         *   For EACH of the three career suggestions, you MUST use the \`getSalaryData\` tool to get a localized salary. Pass the career title and the user's country to the tool.
         *   After generating the ideal list of recommended \`subjects\` for the PRIMARY career suggestion, you MUST use the \`getSubjectAvailability\` tool to check which are available. In the final output, only include the subjects the tool returns as 'available' in the \`subjects\` array for that primary career. For the other two careers, you can list the ideal subjects without verification.
-    6.  **Final Output:** Format the entire response according to the CareerSuggestionsOutputSchema. Ensure there are exactly three career suggestions.
+    6.  **Generate a Featured Professional**: For the primary career, create a fictional 'featuredProfessional' profile. This should include a realistic name, their job title (matching the primary career), and a short, inspiring bio about how they balance their demanding career with a hobby, embodying the 'work hard, play hard' philosophy.
+    7.  **Final Output:** Format the entire response according to the CareerSuggestionsOutputSchema. Ensure there are exactly three career suggestions.
     `,
 });
 

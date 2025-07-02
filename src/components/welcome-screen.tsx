@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Users, GraduationCap, Target, CheckCircle } from 'lucide-react';
+import { Users, GraduationCap, Compass } from 'lucide-react';
 import { useCareerCompass } from '@/context/career-compass-context';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const WelcomeScreen = () => {
   const { setUserType } = useCareerCompass();
@@ -11,68 +12,50 @@ const WelcomeScreen = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <header className="text-center mb-10">
-        <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-          <Target className="w-10 h-10 text-primary-foreground" />
+        <div className="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+          <Compass className="w-10 h-10 text-primary" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 font-headline text-balance">
           Career Compass
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
-          Discover the perfect career path with AI-powered guidance. Answer a few questions to receive personalized, actionable advice.
+          Discover the perfect career path with AI-powered guidance.
         </p>
       </header>
 
-      <main className="w-full max-w-4xl">
-        <Card className="shadow-2xl rounded-2xl w-full">
-          <CardHeader className="text-center items-center pt-8">
-            <CardTitle className="text-3xl font-bold">Who is this for?</CardTitle>
-            <CardDescription className="text-muted-foreground pt-1 text-balance">
-              Select an option to personalize the questions.
-            </CardDescription>
+      <main className="w-full max-w-lg">
+        <Card className="shadow-none border-none bg-transparent w-full">
+          <CardHeader className="text-center items-center pt-2">
+            <CardTitle className="text-2xl font-bold">Who is taking the assessment?</CardTitle>
           </CardHeader>
-          <CardContent className="pb-8">
-            <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-              <div
+          <CardContent>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Button
                 onClick={() => setUserType('parent')}
-                className="group p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 cursor-pointer flex flex-col items-center text-center"
+                variant="outline"
+                className="group p-6 h-auto border-2 rounded-xl hover:border-primary hover:bg-accent transition-all duration-200 cursor-pointer flex flex-col items-center text-center space-y-2"
               >
-                <Users className="w-12 h-12 text-primary mb-4 transition-transform group-hover:scale-110" />
-                <h3 className="text-xl font-semibold mb-2 text-balance">I'm a Parent</h3>
-                <p className="text-muted-foreground text-sm text-balance">
-                  Helping my child navigate their future with wisdom and support.
+                <Users className="w-10 h-10 text-primary mb-2 transition-transform group-hover:scale-110" />
+                <h3 className="text-lg font-semibold text-foreground">I'm a Parent</h3>
+                <p className="text-muted-foreground text-sm text-balance font-normal normal-case">
+                  Helping my child explore their future.
                 </p>
-              </div>
+              </Button>
 
-              <div
+              <Button
                 onClick={() => setUserType('learner')}
-                className="group p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 cursor-pointer flex flex-col items-center text-center"
+                variant="outline"
+                className="group p-6 h-auto border-2 rounded-xl hover:border-primary hover:bg-accent transition-all duration-200 cursor-pointer flex flex-col items-center text-center space-y-2"
               >
-                <GraduationCap className="w-12 h-12 text-primary mb-4 transition-transform group-hover:scale-110" />
-                <h3 className="text-xl font-semibold mb-2 text-balance">I'm a Learner</h3>
-                <p className="text-muted-foreground text-sm text-balance">
-                  Exploring my interests and discovering my own path forward.
+                <GraduationCap className="w-10 h-10 text-primary mb-2 transition-transform group-hover:scale-110" />
+                <h3 className="text-lg font-semibold text-foreground">I'm a Learner</h3>
+                <p className="text-muted-foreground text-sm text-balance font-normal normal-case">
+                  Exploring my interests to find my path.
                 </p>
-              </div>
+              </Button>
             </div>
           </CardContent>
         </Card>
-
-        <div className="grid md:grid-cols-2 gap-4 mt-8 max-w-3xl mx-auto">
-          <div className="bg-card border rounded-lg p-4 text-left flex items-start space-x-3">
-            <Users className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-            <div>
-              <h4 className="text-foreground font-medium text-balance">Better Together</h4>
-              <p className="text-muted-foreground text-sm text-wrap">Invite others to contribute for more accurate results.</p>
-            </div>
-          </div>
-          <div className="bg-card border rounded-lg p-4 text-left flex items-start space-x-3">
-            <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-            <div>
-              <h4 className="text-foreground font-medium text-balance">100% Free</h4>
-              <p className="text-muted-foreground text-sm text-wrap">Get comprehensive career guidance at no cost.</p>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );

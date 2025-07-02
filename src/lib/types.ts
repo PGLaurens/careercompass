@@ -54,6 +54,12 @@ export interface Career {
   dailyTasks?: string[];
 }
 
+export interface FeaturedProfessional {
+  name: string;
+  title: string;
+  bio: string;
+}
+
 export interface CareerResults {
   primaryCareer: Career;
   alternativeCareer: Career;
@@ -67,4 +73,5 @@ export interface CareerResults {
     idealEnvironment: string;
     leadershipStyle: string;
   };
+  featuredProfessional: FeaturedProfessional;
 }

@@ -1,7 +1,7 @@
 'use server';
 
 import { generateCareerSuggestions, type CareerSuggestionsInput, type CareerSuggestionsOutput } from "@/ai/flows/generate-career-suggestions";
-import type { Career, CareerResults } from "@/lib/types";
+import type { Career, CareerResults, FeaturedProfessional } from "@/lib/types";
 
 interface ActionInput {
     responses: Record<string, any>;
@@ -9,6 +9,12 @@ interface ActionInput {
     region: string;
     highSchool: string;
 }
+
+const fallbackProfessional: FeaturedProfessional = {
+    name: "Alex Doe",
+    title: "Software Engineer",
+    bio: "Balancing a passion for innovative tech with a love for mountain biking and the great outdoors."
+};
 
 const fallbackCareers: Career[] = [
     {
@@ -20,13 +26,14 @@ const fallbackCareers: Career[] = [
             { stage: "High School", duration: "Years 10-12", focus: "Computer Science, Mathematics, Physics", details: "Build personal projects and contribute to open source." },
             { stage: "Higher Education", duration: "3-4 years", focus: "Degree in Computer Science or Software Engineering", details: "Gain internship experience to build skills and network." },
             { stage: "Junior Engineer", duration: "1-2 years", focus: "Writing code, fixing bugs, learning the codebase", details: "Work closely with senior engineers to grow." },
+            { stage: "Senior Engineer", duration: "3-5+ years", focus: "Designing systems, mentoring others, and leading projects.", details: "Specialize in an area like cloud computing or AI." },
         ],
         subjects: ["Computer Science", "Mathematics", "Physics"],
-        hobbies: ["Building apps or websites", "Contributing to open-source projects"],
+        hobbies: ["Building apps or websites", "Contributing to open-source projects", "Robotics clubs"],
         salary: "$80,000 - $180,000+",
         growth: "Consistently high demand",
         workEnvironment: "Tech companies of all sizes, from startups to corporations",
-        dailyTasks: ["Writing and testing code", "Collaborating with a team using Git"]
+        dailyTasks: ["Writing and testing code", "Collaborating with a team using Git", "Debugging complex issues", "Designing new software features"]
     },
     {
         title: "UX/UI Designer",
@@ -36,13 +43,15 @@ const fallbackCareers: Career[] = [
         timeline: [
             { stage: "High School", duration: "Years 10-12", focus: "Art/Design, Psychology, Computer Science", details: "Build a portfolio of creative projects." },
             { stage: "Higher Education", duration: "3-4 years", focus: "Degree in Design, Psychology, or HCI", details: "Specialize in Human-Computer Interaction." },
+            { stage: "Junior Designer", duration: "1-2 years", focus: "Creating wireframes, mockups, and user flows under supervision.", details: "Conduct user research and usability testing." },
+             { stage: "Senior Designer", duration: "3-5+ years", focus: "Leading design projects, mentoring junior designers, and defining product strategy.", details: "Develop and maintain design systems." }
         ],
         subjects: ["Art/Design", "Psychology", "Computer Science"],
-        hobbies: ["Digital Art & Illustration", "Photography"],
+        hobbies: ["Digital Art & Illustration", "Photography", "Visiting art galleries"],
         salary: "$55,000 - $120,000+",
         growth: "Excellent demand in tech",
         workEnvironment: "Creative, collaborative, tech-forward companies",
-        dailyTasks: ["Researching user needs", "Creating wireframes and prototypes"]
+        dailyTasks: ["Researching user needs", "Creating wireframes and prototypes", "Presenting designs to stakeholders"]
     },
     {
         title: "Data Scientist",
@@ -52,13 +61,15 @@ const fallbackCareers: Career[] = [
         timeline: [
             { stage: "High School", duration: "Years 10-12", focus: "Advanced Mathematics, Statistics, Computer Science", details: "Participate in math or coding competitions." },
             { stage: "Undergraduate Degree", duration: "4 years", focus: "Degree in Statistics, Math, CS, or Economics", details: "Work on data analysis projects." },
+            { stage: "Junior Data Scientist", duration: "1-3 years", focus: "Cleaning data, running analyses, and building basic models.", details: "Learn from senior scientists and domain experts." },
+            { stage: "Senior Data Scientist", duration: "4-6+ years", focus: "Developing complex models, leading data strategy, and communicating insights to leadership.", details: "Publish research or speak at conferences." }
         ],
         subjects: ["Mathematics", "Computer Science", "Statistics"],
-        hobbies: ["Competitive programming (e.g., Kaggle)", "Building data visualizations"],
+        hobbies: ["Competitive programming (e.g., Kaggle)", "Building data visualizations", "Reading about AI advancements"],
         salary: "$90,000 - $200,000+",
         growth: "Extremely high demand",
         workEnvironment: "Tech companies, finance, healthcare, research labs",
-        dailyTasks: ["Collecting and cleaning large datasets", "Building machine learning models"]
+        dailyTasks: ["Collecting and cleaning large datasets", "Building machine learning models", "Presenting findings to business leaders"]
     }
 ];
 
@@ -78,7 +89,7 @@ export async function getCareerSuggestionsAction({ responses, country, region, h
 
         const result = await generateCareerSuggestions(aiInput);
         
-        if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3) {
+        if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.featuredProfessional) {
             throw new Error("AI returned insufficient or invalid data.");
         }
 
@@ -87,6 +98,7 @@ export async function getCareerSuggestionsAction({ responses, country, region, h
             alternativeCareer: result.careerSuggestions[1],
             thirdCareer: result.careerSuggestions[2],
             insights: result.insights,
+            featuredProfessional: result.featuredProfessional,
         };
 
         return { success: true, data: finalResults };
@@ -98,6 +110,7 @@ export async function getCareerSuggestionsAction({ responses, country, region, h
             primaryCareer: fallbackCareers[0],
             alternativeCareer: fallbackCareers[1],
             thirdCareer: fallbackCareers[2],
+            featuredProfessional: fallbackProfessional,
             insights: {
                 personalityType: "Determined Achiever",
                 strengths: ["Resilience", "Problem-solving"],
