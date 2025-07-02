@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import type { Career, CareerResults, FeaturedProfessional, TimelineStage } from '@/lib/types';
 import { useCareerCompass } from '@/context/career-compass-context';
 import { Button } from './ui/button';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import {
   Compass,
   ArrowLeft,
@@ -20,6 +22,7 @@ import {
   Download,
   UserPlus,
   Play,
+  Loader2,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,6 +70,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
   const { resetSession } = useCareerCompass();
   const router = useRouter();
   const [showShareModal, setShowShareModal] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const { primaryCareer, alternativeCareer, thirdCareer, insights, featuredProfessional } = results;
 
   const handleStartOver = () => {
@@ -74,14 +78,60 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
     router.push('/');
   };
 
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    const reportElement = document.getElementById('report-content');
+
+    if (reportElement) {
+        try {
+            const canvas = await html2canvas(reportElement, {
+                scale: 2,
+                useCORS: true,
+                onclone: (doc) => {
+                    doc.querySelectorAll('[data-no-print="true"]').forEach((el) => {
+                        (el as HTMLElement).style.display = 'none';
+                    });
+                },
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            
+            let heightLeft = pdfHeight;
+            let position = 0;
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            heightLeft -= pdf.internal.pageSize.getHeight();
+
+            while (heightLeft > 0) {
+                position = heightLeft - pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+            }
+            
+            pdf.save('Career-Compass-Report.pdf');
+
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+        }
+    }
+
+    setIsDownloading(false);
+  };
+
+
   const allCareers = [primaryCareer, alternativeCareer, thirdCareer];
 
   return (
     <>
       <div className="min-h-screen bg-background">
-        <div className="mx-auto max-w-4xl p-4 md:p-6 lg:p-8">
+        <div id="report-content" className="mx-auto max-w-4xl p-4 md:p-6 lg:p-8">
           <header className="mb-8">
-            <Button variant="ghost" onClick={() => router.back()} className="mb-4 -ml-4 text-muted-foreground">
+            <Button variant="ghost" onClick={() => router.back()} data-no-print="true" className="mb-4 -ml-4 text-muted-foreground">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back
             </Button>
             <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
@@ -255,7 +305,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
             </div>
 
             <div className="mt-12 space-y-8">
-              <Card className="rounded-xl border-2 shadow-none">
+              <Card className="rounded-xl border-2 shadow-none" data-no-print="true">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <Share2 className="h-6 w-6 text-primary" />
@@ -267,14 +317,18 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                         <UserPlus className="mr-2 h-4 w-4" />
                         Invite More Contributors
                     </Button>
-                    <Button variant="secondary" className="w-full">
-                        <Download className="mr-2 h-4 w-4" />
-                        Download Full Report
+                    <Button variant="secondary" className="w-full" onClick={handleDownload} disabled={isDownloading}>
+                        {isDownloading ? (
+                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                           <Download className="mr-2 h-4 w-4" />
+                        )}
+                        {isDownloading ? 'Generating PDF...' : 'Download Full Report'}
                     </Button>
                 </CardContent>
               </Card>
 
-              <Card className="rounded-xl border-2 shadow-none">
+              <Card className="rounded-xl border-2 shadow-none" data-no-print="true">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <Play className="h-6 w-6 text-primary" />
@@ -288,7 +342,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </CardContent>
               </Card>
 
-              <Card className="rounded-xl border-2 shadow-none bg-accent/50 text-center">
+              <Card className="rounded-xl border-2 shadow-none bg-accent/50 text-center" data-no-print="true">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold">Ready for the Next Step?</h3>
                   <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
@@ -302,7 +356,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
               </Card>
             </div>
             
-            <div className="mt-8 text-center">
+            <div className="mt-8 text-center" data-no-print="true">
                 <Button onClick={handleStartOver} variant="ghost" className="text-muted-foreground">
                     Start Over
                 </Button>
