@@ -15,6 +15,8 @@ interface CareerCompassContextType {
   addContributor: (contributor: Contributor) => void;
   resetSession: () => void;
   isLoading: boolean;
+  currentContributorId: string | null;
+  setCurrentContributorId: (id: string | null) => void;
 }
 
 const CareerCompassContext = createContext<CareerCompassContextType | undefined>(undefined);
@@ -34,6 +36,7 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
   const [sessionData, setSessionData] = useState<SessionData>(initialState);
   const [responses, setResponses] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [currentContributorId, setCurrentContributorId] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -42,10 +45,11 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
     try {
       const savedState = localStorage.getItem('careerCompassSession');
       if (savedState) {
-        const { userType, sessionData, responses } = JSON.parse(savedState);
+        const { userType, sessionData, responses, currentContributorId } = JSON.parse(savedState);
         setUserTypeState(userType);
-        setSessionData(sessionData || initialState); // Ensure sessionData is not null
+        setSessionData(sessionData || initialState);
         setResponses(responses || {});
+        setCurrentContributorId(currentContributorId || null);
       }
     } catch (error) {
       console.error("Failed to load state from localStorage", error);
@@ -58,13 +62,13 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
   useEffect(() => {
     if (!isLoading) {
       try {
-        const stateToSave = JSON.stringify({ userType, sessionData, responses });
+        const stateToSave = JSON.stringify({ userType, sessionData, responses, currentContributorId });
         localStorage.setItem('careerCompassSession', stateToSave);
       } catch (error) {
         console.error("Failed to save state to localStorage", error);
       }
     }
-  }, [userType, sessionData, responses, isLoading]);
+  }, [userType, sessionData, responses, currentContributorId, isLoading]);
   
   const setUserType = (newUserType: UserType) => {
     setUserTypeState(newUserType);
@@ -73,10 +77,12 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
 
   const startSession = (name: string, email: string, studentName: string = '', country: string, region: string, highSchool: string) => {
     const isParent = userType === 'parent';
+    const firstContributorId = Math.random().toString(36).substr(2, 9);
     const newSessionData: SessionData = {
       studentName: isParent ? studentName : name,
       sessionId: Math.random().toString(36).substr(2, 9),
       contributors: [{
+        id: firstContributorId,
         name,
         email,
         relationship: isParent ? 'Parent' : 'Self',
@@ -88,6 +94,7 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
       highSchool,
     };
     setSessionData(newSessionData);
+    setCurrentContributorId(firstContributorId);
     router.push('/assessment');
   };
 
@@ -104,6 +111,7 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
     setUserTypeState(null);
     setSessionData(initialState);
     setResponses({});
+    setCurrentContributorId(null);
     localStorage.removeItem('careerCompassSession');
     router.push('/');
   };
@@ -119,7 +127,9 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
       startSession,
       addContributor,
       resetSession,
-      isLoading
+      isLoading,
+      currentContributorId,
+      setCurrentContributorId
     }}>
       {children}
     </CareerCompassContext.Provider>

@@ -10,13 +10,18 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const CareerSuggestionsInputSchema = z.object({
+const ContributorResponseSchema = z.object({
+  relationship: z.string().describe('The relationship of the contributor to the learner (e.g., Self, Parent, Friend).'),
   interests: z.array(z.string()).describe('The interests of the user.'),
   strengths: z.array(z.string()).describe('The strengths of the user.'),
   workEnvironment: z.string().describe('The preferred work environment of the user.'),
   personalityTraits: z.array(z.string()).describe('The personality traits of the user.'),
   values: z.array(z.string()).describe('The values of the user.'),
   learningStyle: z.array(z.string()).describe('The learning style of the user.'),
+});
+
+const CareerSuggestionsInputSchema = z.object({
+  contributorResponses: z.array(ContributorResponseSchema).describe('An array of responses from various contributors.'),
   country: z.string().describe('The country the user resides in.'),
   region: z.string().describe('The state or province the user resides in.'),
   highSchool: z.string().describe('The high school the user attends.'),
@@ -32,7 +37,7 @@ const TimelineStageSchema = z.object({
 
 const CareerSchema = z.object({
     title: z.string().describe('The title of the career suggestion.'),
-    description: z.string().describe('A short description of the career.'),
+    description: z.string().describe('A short description of the career. For the primary recommendation, include two simple, concrete examples of roles or specializations to make it less broad.'),
     reasoning: z.string().describe('The reasoning for suggesting this career based on the user input.'),
     matchPercentage: z.number().describe('A percentage indicating how well the career matches the user.'),
     timeline: z.array(TimelineStageSchema).describe("A detailed timeline of the user's journey to this career, covering all stages from high school to a senior-level position."),
@@ -45,14 +50,15 @@ const CareerSchema = z.object({
 });
 
 const InsightsSchema = z.object({
-    personalityType: z.string(),
-    strengths: z.array(z.string()),
-    motivations: z.array(z.string()),
-    workStyle: z.string(),
-    stressFactors: z.array(z.string()),
-    idealEnvironment: z.string(),
-    leadershipStyle: z.string(),
+    personalityType: z.string().describe("A descriptive title for the user's personality (e.g., 'The Creative Problem-Solver'). End this sentence with a period."),
+    strengths: z.array(z.string()).describe("A list of the user's key strengths. End each sentence with a period."),
+    motivations: z.array(z.string()).describe("A list of the user's primary motivations. End each sentence with a period."),
+    workStyle: z.string().describe("A description of the user's ideal work style. End this sentence with a period."),
+    stressFactors: z.array(z.string()).describe("A list of potential stress factors for the user. End each sentence with a period."),
+    idealEnvironment: z.string().describe("A description of the user's ideal work environment. End this sentence with a period."),
+    leadershipStyle: z.string().describe("A description of the user's potential leadership style. End this sentence with a period."),
 });
+
 
 const FeaturedProfessionalSchema = z.object({
     name: z.string().describe("A realistic-sounding full name for the fictional professional."),
@@ -63,7 +69,7 @@ const FeaturedProfessionalSchema = z.object({
 
 const CareerSuggestionsOutputSchema = z.object({
   careerSuggestions: z.array(CareerSchema).length(3).describe('A list of exactly 3 career suggestions, from best match to third best match.'),
-  insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers."),
+  insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers. Ensure every sentence and item in this object ends with a period."),
   featuredProfessional: FeaturedProfessionalSchema.describe("A profile of a fictional professional representing the primary career path."),
 });
 export type CareerSuggestionsOutput = z.infer<typeof CareerSuggestionsOutputSchema>;
@@ -135,25 +141,28 @@ const careerSuggester = ai.definePrompt({
     input: { schema: CareerSuggestionsInputSchema },
     output: { schema: CareerSuggestionsOutputSchema },
     tools: [getSalaryData, getSubjectAvailability],
-    prompt: `You are a world-class career counselor AI named "Career Compass". Your goal is to provide three detailed, inspiring, and actionable career suggestions based on the user's profile. You must also provide a detailed analysis of the user's personality and work style.
+    prompt: `You are a world-class career counselor AI named "Career Compass". Your goal is to provide three detailed, inspiring, and actionable career suggestions based on a synthesis of inputs from multiple contributors about a learner. You must also provide a detailed analysis of the learner's personality and work style.
 
-    **User Profile:**
-    *   Interests: {{#if interests}} {{#each interests}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
-    *   Strengths: {{#if strengths}} {{#each strengths}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
-    *   Preferred Work Environment: {{{workEnvironment}}}
-    *   Personality Traits: {{#if personalityTraits}} {{#each personalityTraits}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
-    *   Values: {{#if values}} {{#each values}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
-    *   Learning Style: {{#if learningStyle}} {{#each learningStyle}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+    **Contributor Profiles & Responses:**
+    {{#each contributorResponses}}
+    *   **Contributor: {{this.relationship}}**
+        *   Interests: {{#if this.interests}} {{#each this.interests}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+        *   Strengths: {{#if this.strengths}} {{#each this.strengths}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+        *   Preferred Work Environment: {{{this.workEnvironment}}}
+        *   Personality Traits: {{#if this.personalityTraits}} {{#each this.personalityTraits}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+        *   Values: {{#if this.values}} {{#each this.values}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+        *   Learning Style: {{#if this.learningStyle}} {{#each this.learningStyle}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+    {{/each}}
     *   Location: {{{region}}}, {{{country}}}
     *   High School: {{{highSchool}}}
 
     **Process:**
 
-    1.  **Analyze User Profile:** Deeply analyze all provided inputs: interests, strengths, work environment preference, personality, values, and learning style.
-    2.  **Generate Insights:** First, create the 'insights' object. Synthesize the inputs into a cohesive personality profile, including strengths, motivations, and ideal work style.
-    3.  **Brainstorm Careers:** Based on the user profile, brainstorm a list of potential careers. Select the top three best matches.
+    1.  **Synthesize User Profile:** Deeply analyze and synthesize the inputs from ALL contributors. Look for common themes and also note interesting differences in perspective.
+    2.  **Generate Insights:** First, create the 'insights' object. Synthesize the inputs into a cohesive personality profile, including strengths, motivations, and ideal work style. **Ensure every sentence and item in this object ends with a period.**
+    3.  **Brainstorm Careers:** Based on the synthesized profile, brainstorm a list of potential careers. Select the top three best matches.
     4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. It is **critical** that the \`description\`, \`reasoning\`, \`timeline\`, \`subjects\`, \`hobbies\`, and \`dailyTasks\` are all highly relevant and specific to the career \`title\`. Do not use generic information. This includes:
-        *   \`title\`, \`description\`, \`reasoning\`, \`matchPercentage\`.
+        *   \`title\`, \`description\`, \`reasoning\`, \`matchPercentage\`. For the primary career's \`description\`, include two simple, concrete examples of roles or specializations (e.g., for "Software Engineer", you could add "Examples: Mobile App Developer, Cloud Infrastructure Engineer.").
         *   A detailed \`timeline\` with at least 4-5 stages, starting from high school and progressing through education, junior, mid-level, and senior roles.
         *   A list of recommended \`subjects\` that are typically required or highly beneficial for that career.
         *   A list of \`hobbies\` that promote a "work hard, play hard" lifestyle. These hobbies should complement the likely lifestyle and interests of someone in that career, providing a healthy work-life balance. For example, a high-stress, high-income job might have hobbies related to relaxation or travel.

@@ -1,73 +1,130 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCareerCompass } from '@/context/career-compass-context';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Share2, Copy, CheckCircle, Clock } from 'lucide-react';
+import { Share2, Copy, CheckCircle, Clock, UserPlus, Pencil } from 'lucide-react';
+import type { Contributor } from '@/lib/types';
 
 interface ShareModalProps {
   setShow: (show: boolean) => void;
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
-  const { sessionData } = useCareerCompass();
+  const { sessionData, addContributor, setCurrentContributorId } = useCareerCompass();
+  const router = useRouter();
   const { toast } = useToast();
-  const shareLink = `${window.location.origin}/contribute/${sessionData.sessionId}`;
+  
+  const [name, setName] = useState('');
+  const [relationship, setRelationship] = useState('');
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(shareLink);
-    toast({
-      title: "Copied to clipboard!",
-      description: "You can now share the link with others.",
-    });
+  const handleAddContributor = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (sessionData.contributors.length >= 5) {
+      toast({
+        variant: "destructive",
+        title: "Maximum Contributors Reached",
+        description: "You can only add up to 5 contributors.",
+      });
+      return;
+    }
+    if (name && relationship) {
+      const newContributor: Contributor = {
+        id: Math.random().toString(36).substr(2, 9),
+        name,
+        relationship: relationship as Contributor['relationship'],
+        email: '', // Email is not mandatory for this flow
+        completed: false,
+      };
+      addContributor(newContributor);
+      toast({
+        title: "Contributor Added!",
+        description: `${name} can now take the assessment.`,
+      });
+      setName('');
+      setRelationship('');
+    }
+  };
+
+  const startAssessmentFor = (contributorId: string) => {
+    setCurrentContributorId(contributorId);
+    setShow(false);
+    router.push('/assessment');
   };
 
   return (
     <Dialog open onOpenChange={setShow}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-            <Share2 className="w-6 h-6 text-primary-foreground" />
+            <UserPlus className="w-6 h-6 text-primary-foreground" />
           </div>
-          <DialogTitle className="text-center text-xl text-balance">Get More Perspectives</DialogTitle>
+          <DialogTitle className="text-center text-xl text-balance">Add More Perspectives</DialogTitle>
           <DialogDescription className="text-center text-wrap">
-            Invite family and friends to contribute their insights about {sessionData.studentName || 'the student'}.
+            Add up to 5 family members, friends, or mentors to contribute insights for {sessionData.studentName || 'the student'}. This works best by passing the device to each person.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-            <div className="space-y-2">
-                <label className="text-sm font-medium">Share Link</label>
-                <div className="flex items-center space-x-2">
-                    <Input value={shareLink} readOnly />
-                    <Button size="icon" onClick={copyToClipboard}>
-                        <Copy className="w-4 h-4" />
-                    </Button>
-                </div>
-            </div>
-
+        <div className="space-y-6 py-4">
             <div className="p-4 bg-accent/10 border border-accent/20 rounded-lg">
-                <h4 className="font-semibold text-accent-foreground mb-2 text-balance">Contributors So Far</h4>
+                <h4 className="font-semibold text-accent-foreground mb-3 text-balance">Contributors ({sessionData.contributors.length}/5)</h4>
                 <div className="space-y-2">
-                {sessionData.contributors.map((contributor, index) => (
-                    <div key={index} className="flex items-center justify-between text-sm">
-                    <span className="text-accent-foreground/90 text-wrap">{contributor.name} ({contributor.relationship})</span>
-                    {contributor.completed ? (
-                        <CheckCircle className="w-4 h-4 text-accent" />
-                    ) : (
-                        <Clock className="w-4 h-4 text-muted-foreground" />
-                    )}
+                {sessionData.contributors.map((contributor) => (
+                    <div key={contributor.id} className="flex items-center justify-between text-sm p-2 rounded-md bg-background">
+                        <div className="flex items-center gap-2">
+                            {contributor.completed ? (
+                                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            ) : (
+                                <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                            )}
+                            <span className="text-foreground/90 text-wrap">{contributor.name} ({contributor.relationship})</span>
+                        </div>
+                        <Button size="sm" variant="ghost" onClick={() => startAssessmentFor(contributor.id)}>
+                            <Pencil className="w-3 h-3 mr-1" />
+                            {contributor.completed ? 'Edit' : 'Start'}
+                        </Button>
                     </div>
                 ))}
                 </div>
-                {sessionData.contributors.length < 5 &&
-                    <p className="text-xs text-accent-foreground/80 mt-2 text-wrap">
-                        {5 - sessionData.contributors.length} more contributors can be added.
-                    </p>
-                }
             </div>
+
+            {sessionData.contributors.length < 5 && (
+                <form onSubmit={handleAddContributor} className="space-y-4 border-t pt-6">
+                    <div>
+                        <h4 className="font-semibold text-accent-foreground mb-2 text-balance">Add a New Contributor</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                                <Label htmlFor="name">Name</Label>
+                                <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Jane Doe" required />
+                            </div>
+                            <div className="space-y-1">
+                                <Label htmlFor="relationship">Relationship</Label>
+                                 <Select onValueChange={setRelationship} value={relationship}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select relationship" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Parent">Parent</SelectItem>
+                                        <SelectItem value="Friend">Friend</SelectItem>
+                                        <SelectItem value="Teacher">Teacher</SelectItem>
+                                        <SelectItem value="Mentor">Mentor</SelectItem>
+                                        <SelectItem value="Family">Other Family</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                    </div>
+                    <Button type="submit" className="w-full">
+                       <UserPlus className="w-4 h-4 mr-2" />
+                       Add Contributor
+                    </Button>
+                </form>
+            )}
         </div>
         <DialogFooter>
           <Button type="button" variant="secondary" onClick={() => setShow(false)}>Close</Button>

@@ -11,7 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 
 const ResultsPage = () => {
-    const { sessionData, responses, isLoading: isContextLoading } = useCareerCompass();
+    const { sessionData, isLoading: isContextLoading } = useCareerCompass();
     const router = useRouter();
     const [results, setResults] = useState<CareerResults | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -24,14 +24,11 @@ const ResultsPage = () => {
     }, [sessionData, isContextLoading, router]);
 
     useEffect(() => {
-        if (sessionData.sessionId && Object.keys(responses).length > 0 && !results) {
+        // Only run if we have session data, at least one completed response, and no results yet.
+        const completedContributors = sessionData.contributors.filter(c => c.completed).length;
+        if (sessionData.sessionId && completedContributors > 0 && !results) {
             startTransition(async () => {
-                const actionInput = { 
-                    responses, 
-                    country: sessionData.country,
-                    region: sessionData.region,
-                    highSchool: sessionData.highSchool
-                };
+                const actionInput = { sessionData };
                 const result = await getCareerSuggestionsAction(actionInput);
                 if (result.success) {
                     setResults(result.data);
@@ -40,7 +37,7 @@ const ResultsPage = () => {
                 }
             });
         }
-    }, [sessionData, responses, results, router]); 
+    }, [sessionData, results, router]);
 
     if (isContextLoading || isPending) {
         return (

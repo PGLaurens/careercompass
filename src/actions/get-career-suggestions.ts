@@ -1,13 +1,10 @@
 'use server';
 
 import { generateCareerSuggestions, type CareerSuggestionsInput, type CareerSuggestionsOutput } from "@/ai/flows/generate-career-suggestions";
-import type { Career, CareerResults, FeaturedProfessional } from "@/lib/types";
+import type { Career, CareerResults, FeaturedProfessional, SessionData } from "@/lib/types";
 
 interface ActionInput {
-    responses: Record<string, any>;
-    country: string;
-    region: string;
-    highSchool: string;
+    sessionData: SessionData;
 }
 
 const fallbackProfessional: FeaturedProfessional = {
@@ -73,24 +70,31 @@ const fallbackCareers: Career[] = [
     }
 ];
 
-export async function getCareerSuggestionsAction({ responses, country, region, highSchool }: ActionInput): Promise<{ success: true; data: CareerResults } | { success: false; error: string }> {
+export async function getCareerSuggestionsAction({ sessionData }: ActionInput): Promise<{ success: true; data: CareerResults } | { success: false; error: string }> {
     try {
+        const contributorResponses = sessionData.allResponses.map(responseSet => {
+            const { responses } = responseSet;
+            return {
+                relationship: responseSet.relationship,
+                interests: responses.personal_interests || responses.child_interests || [],
+                strengths: responses.child_strengths || [],
+                workEnvironment: responses.work_environment || "",
+                personalityTraits: responses.personality_traits || responses.personality_type || [],
+                values: responses.core_values || [],
+                learningStyle: responses.learning_style || [],
+            };
+        });
+        
         const aiInput: CareerSuggestionsInput = {
-            interests: responses.personal_interests || responses.child_interests || [],
-            strengths: responses.child_strengths || [],
-            workEnvironment: responses.work_environment || "",
-            personalityTraits: responses.personality_traits || responses.personality_type || [],
-            values: responses.core_values || [],
-            learningStyle: responses.learning_style || [],
-            country,
-            region,
-            highSchool,
+            contributorResponses,
+            country: sessionData.country,
+            region: sessionData.region,
+            highSchool: sessionData.highSchool,
         };
 
         const result = await generateCareerSuggestions(aiInput);
         
         if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.featuredProfessional) {
-            // This case handles if the AI returns a malformed response, even if the call succeeds.
             throw new Error("AI returned insufficient or invalid data.");
         }
 
@@ -108,7 +112,6 @@ export async function getCareerSuggestionsAction({ responses, country, region, h
     } catch (error) {
         console.error("Error in getCareerSuggestionsAction:", error);
         
-        // Instead of returning fallback data, return a descriptive error to the client.
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
         const userFriendlyError = `Failed to generate AI results. Please ensure your Gemini API key is correctly configured in the .env file and that the Genkit server is running in a separate terminal. (Details: ${errorMessage})`;
 

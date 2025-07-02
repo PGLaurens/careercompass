@@ -23,27 +23,6 @@ const WelcomeScreen = () => {
         </p>
       </header>
 
-      <div className="w-full max-w-lg space-y-4 mb-10">
-        <div className="bg-warning text-warning-foreground rounded-xl border border-warning-foreground/20 p-4">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <Users className="w-5 h-5" />
-            <h4 className="font-semibold text-base">Better Together</h4>
-          </div>
-          <p className="text-sm text-center text-balance">
-            Invite up to 5 family members or friends to contribute their perspectives for more accurate results
-          </p>
-        </div>
-        <div className="bg-success text-success-foreground rounded-xl border border-success-foreground/20 p-4">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <CheckCircle className="w-5 h-5" />
-            <h4 className="font-semibold text-base">100% Free</h4>
-          </div>
-          <p className="text-sm text-center text-balance">
-            Complete career guidance with detailed reports at no cost
-          </p>
-        </div>
-      </div>
-
       <main className="w-full max-w-lg">
         <Card className="shadow-none border-none bg-transparent w-full">
           <CardHeader className="text-center items-center pt-2">

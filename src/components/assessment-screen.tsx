@@ -37,7 +37,7 @@ const SortableItem = ({ id, children }: { id: string, children: React.ReactNode 
 };
 
 const AssessmentScreen = () => {
-    const { userType, responses, setResponses, sessionData, setSessionData } = useCareerCompass();
+    const { userType, responses, setResponses, sessionData, setSessionData, currentContributorId } = useCareerCompass();
     const router = useRouter();
 
     const [currentQuestionSet, setCurrentQuestionSet] = useState(0);
@@ -57,6 +57,8 @@ const AssessmentScreen = () => {
     
     const totalQuestions = questionSets[userType].reduce((sum, set) => sum + set.length, 0);
     const questionsCompleted = questionSets[userType].slice(0, currentQuestionSet).reduce((sum, set) => sum + set.length, 0) + currentQuestion;
+    
+    const currentContributor = sessionData.contributors.find(c => c.id === currentContributorId);
 
     const handleNext = (answer: any) => {
         const newResponses = { ...responses, [activeQuestion.id]: answer };
@@ -66,22 +68,45 @@ const AssessmentScreen = () => {
         const isLastSet = currentQuestionSet === questionSets[userType].length - 1;
 
         if (isLastQuestion && isLastSet) {
-            const currentUserEmail = sessionData.contributors[0]?.email;
+            if (!currentContributor) return; // Should not happen
+
+            // Mark contributor as completed
             const updatedContributors = sessionData.contributors.map(c =>
-                c.email === currentUserEmail ? { ...c, completed: true } : c
+                c.id === currentContributorId ? { ...c, completed: true } : c
             );
+
+            // Check if there are existing responses for this contributor
+            const existingResponseIndex = sessionData.allResponses.findIndex(
+                r => r.contributorId === currentContributorId
+            );
+
+            let updatedAllResponses;
+            const newResponsePayload = {
+                contributorId: currentContributor.id,
+                contributor: currentContributor.name,
+                relationship: currentContributor.relationship,
+                responses: newResponses
+            };
+
+            if (existingResponseIndex > -1) {
+                // Update existing responses
+                updatedAllResponses = [...sessionData.allResponses];
+                updatedAllResponses[existingResponseIndex] = newResponsePayload;
+            } else {
+                // Add new responses
+                updatedAllResponses = [...sessionData.allResponses, newResponsePayload];
+            }
             
             setSessionData(prev => ({
                 ...prev,
                 contributors: updatedContributors,
-                allResponses: [...prev.allResponses, {
-                    contributor: sessionData.contributors[0].name,
-                    relationship: sessionData.contributors[0].relationship,
-                    responses: newResponses
-                }]
+                allResponses: updatedAllResponses,
             }));
 
+            // Reset local responses for the next contributor
+            setResponses({});
             router.push('/results');
+
         } else if (isLastQuestion) {
             setCurrentQuestionSet(currentQuestionSet + 1);
             setCurrentQuestion(0);
@@ -143,6 +168,9 @@ const AssessmentScreen = () => {
                      <Button variant="ghost" onClick={() => router.back()} className="mb-4 text-muted-foreground">
                         <ArrowLeft className="w-4 h-4 mr-2" /> Back
                      </Button>
+                     <div className="p-3 mb-4 text-center rounded-lg bg-accent text-accent-foreground text-sm">
+                        You are answering as: <strong className="font-bold">{currentContributor?.name} ({currentContributor?.relationship})</strong>
+                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-sm text-muted-foreground font-medium">Progress</span>
                         <span className="text-sm text-muted-foreground">{questionsCompleted + 1} of {totalQuestions}</span>

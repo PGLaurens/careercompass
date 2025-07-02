@@ -1,9 +1,10 @@
 export type UserType = 'parent' | 'learner' | null;
 
 export interface Contributor {
+  id: string;
   name: string;
   email: string;
-  relationship: 'Parent' | 'Self' | 'Friend' | 'Teacher' | 'Mentor';
+  relationship: 'Parent' | 'Self' | 'Friend' | 'Teacher' | 'Mentor' | 'Family';
   completed: boolean;
 }
 
@@ -12,6 +13,7 @@ export interface SessionData {
   sessionId: string;
   contributors: Contributor[];
   allResponses: {
+    contributorId: string;
     contributor: string;
     relationship: string;
     responses: Record<string, any>;
