@@ -171,8 +171,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </CardHeader>
                 <CardContent className="grid sm:grid-cols-2 gap-4 text-sm">
                     <p><strong className="text-foreground">Personality Type:</strong><span className="text-muted-foreground"> {insights.personalityType}</span></p>
-                    <p><strong className="text-foreground">Key Strengths:</strong><span className="text-muted-foreground"> {insights.strengths.join(', ')}</span></p>
-                    <p><strong className="text-foreground">Motivations:</strong><span className="text-muted-foreground"> {insights.motivations.join(', ')}</span></p>
+                    <p><strong className="text-foreground">Key Strengths:</strong><span className="text-muted-foreground"> {insights.strengths.join(', ')}.</span></p>
+                    <p><strong className="text-foreground">Motivations:</strong><span className="text-muted-foreground"> {insights.motivations.join(', ')}.</span></p>
                     <p><strong className="text-foreground">Ideal Work Style:</strong><span className="text-muted-foreground"> {insights.workStyle}</span></p>
                 </CardContent>
             </Card>

@@ -50,13 +50,13 @@ const CareerSchema = z.object({
 });
 
 const InsightsSchema = z.object({
-    personalityType: z.string().describe("A descriptive title for the user's personality (e.g., 'The Creative Problem-Solver'). End this sentence with a period."),
-    strengths: z.array(z.string()).describe("A list of the user's key strengths. End each sentence with a period."),
-    motivations: z.array(z.string()).describe("A list of the user's primary motivations. End each sentence with a period."),
-    workStyle: z.string().describe("A description of the user's ideal work style. End this sentence with a period."),
-    stressFactors: z.array(z.string()).describe("A list of potential stress factors for the user. End each sentence with a period."),
-    idealEnvironment: z.string().describe("A description of the user's ideal work environment. End this sentence with a period."),
-    leadershipStyle: z.string().describe("A description of the user's potential leadership style. End this sentence with a period."),
+    personalityType: z.string().describe("A descriptive title for the user's personality (e.g., 'The Creative Problem-Solver'). This MUST end with a period."),
+    strengths: z.array(z.string()).describe("A list of the user's key strengths. Do NOT add a period at the end of each item."),
+    motivations: z.array(z.string()).describe("A list of the user's primary motivations. Do NOT add a period at the end of each item."),
+    workStyle: z.string().describe("A description of the user's ideal work style. This MUST end with a period."),
+    stressFactors: z.array(z.string()).describe("A list of potential stress factors for the user. Do NOT add a period at the end of each item."),
+    idealEnvironment: z.string().describe("A description of the user's ideal work environment. This MUST end with a period."),
+    leadershipStyle: z.string().describe("A description of the user's potential leadership style. This MUST end with a period."),
 });
 
 
@@ -69,7 +69,7 @@ const FeaturedProfessionalSchema = z.object({
 
 const CareerSuggestionsOutputSchema = z.object({
   careerSuggestions: z.array(CareerSchema).length(3).describe('A list of exactly 3 career suggestions, from best match to third best match.'),
-  insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers. Ensure every sentence and item in this object ends with a period."),
+  insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers. Follow the punctuation rules in the InsightsSchema descriptions: end all single-string fields with a period, but do not add periods to items in string arrays."),
   featuredProfessional: FeaturedProfessionalSchema.describe("A profile of a fictional professional representing the primary career path."),
 });
 export type CareerSuggestionsOutput = z.infer<typeof CareerSuggestionsOutputSchema>;
@@ -164,7 +164,7 @@ const careerSuggester = ai.definePrompt({
     **Process:**
 
     1.  **Synthesize User Profile:** Deeply analyze and synthesize the inputs from ALL contributors, applying the weighting instructions above. Look for common themes and also note interesting differences in perspective.
-    2.  **Generate Insights:** First, create the 'insights' object. Synthesize the inputs into a cohesive personality profile, including strengths, motivations, and ideal work style. **Ensure every sentence and item in this object ends with a period.**
+    2.  **Generate Insights:** First, create the 'insights' object. Synthesize the inputs into a cohesive personality profile, including strengths, motivations, and ideal work style. **Important Punctuation Rule:** For any fields that are single strings (like 'personalityType' or 'workStyle'), ensure the string ends with a period. For fields that are arrays of strings (like 'strengths' or 'motivations'), do NOT add a period to each individual item in the array.
     3.  **Brainstorm Careers:** Based on the synthesized profile, brainstorm a list of potential careers. Select the top three best matches.
     4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. It is **critical** that the \`description\`, \`reasoning\`, \`timeline\`, \`subjects\`, \`hobbies\`, and \`dailyTasks\` are all highly relevant and specific to the career \`title\`. Do not use generic information. This includes:
         *   \`title\`, \`description\`, \`reasoning\`, \`matchPercentage\`. For the primary career's \`description\`, include two simple, concrete examples of roles or specializations (e.g., for "Software Engineer", you could add "Examples: Mobile App Developer, Cloud Infrastructure Engineer.").
