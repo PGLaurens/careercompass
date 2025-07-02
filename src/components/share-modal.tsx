@@ -74,8 +74,8 @@ const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
             <div className="p-4 bg-accent/10 border border-accent/20 rounded-lg">
                 <h4 className="font-semibold text-accent-foreground mb-3 text-balance">Contributors ({sessionData.contributors.length}/5)</h4>
                 <div className="space-y-2">
-                {sessionData.contributors.map((contributor) => (
-                    <div key={contributor.id} className="flex items-center justify-between text-sm p-2 rounded-md bg-background">
+                {sessionData.contributors.map((contributor, index) => (
+                    <div key={`${contributor.id}-${index}`} className="flex items-center justify-between text-sm p-2 rounded-md bg-background">
                         <div className="flex items-center gap-2">
                             {contributor.completed ? (
                                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
