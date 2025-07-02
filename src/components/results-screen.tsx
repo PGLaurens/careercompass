@@ -65,6 +65,12 @@ const TimelineItem: React.FC<{ item: TimelineStage; isLast: boolean }> = ({ item
     <p className="mt-1 text-sm text-muted-foreground">
       <span className="font-medium text-foreground/80">Details:</span> {item.details}
     </p>
+    {item.salary && (
+      <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+        <DollarSign className="h-3 w-3" />
+        <span>Est. Salary: {item.salary}</span>
+      </div>
+    )}
   </div>
 );
 
@@ -268,24 +274,57 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                             <span>{career.title}</span>
                           </div>
                         </AccordionTrigger>
-                        <AccordionContent className="pt-2 px-6">
-                          <div className="space-y-4 p-4 bg-accent/30 rounded-lg">
+                        <AccordionContent className="pt-2 pb-6 px-6">
+                          <div className="space-y-6 pt-4">
                             <p className="text-muted-foreground">{career.description}</p>
                             <p className="text-sm font-medium text-accent-foreground">{career.reasoning}</p>
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                              <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Salary">
-                                {career.salary}
-                              </InfoCard>
-                              <InfoCard icon={<Sprout className="h-5 w-5" />} title="Growth Outlook">
-                                {career.growth}
-                              </InfoCard>
-                              <InfoCard icon={<Building className="h-5 w-5" />} title="Work Environment">
-                                {career.workEnvironment}
-                              </InfoCard>
-                              <InfoCard icon={<BookOpen className="h-5 w-5" />} title="Key Subjects">
-                                {career.subjects?.join(', ')}
+                            
+                            <div className="space-y-px bg-border rounded-lg overflow-hidden">
+                                <div className="bg-card p-4">
+                                  <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Salary">
+                                    <p>{career.salary}</p>
+                                  </InfoCard>
+                                </div>
+                                <div className="bg-card p-4">
+                                  <InfoCard icon={<Sprout className="h-5 w-5" />} title="Growth Outlook">
+                                    <p>{career.growth}</p>
+                                  </InfoCard>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h4>
+                                <div className="space-y-6">
+                                  {career.timeline?.map((item, index) => (
+                                    <TimelineItem key={index} item={item} isLast={index === career.timeline!.length - 1} />
+                                  ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h4>
+                                <ul className="space-y-2">
+                                  {career.dailyTasks?.map((task, index) => (
+                                    <li key={index} className="flex items-start gap-3 text-sm">
+                                      <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                                      <span className="text-muted-foreground">{task}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                            </div>
+
+                            <div>
+                              <InfoCard icon={<BookOpen className="h-5 w-5" />} title="Recommended Subjects">
+                                <>
+                                  <div className="flex flex-wrap gap-2">
+                                    {career.subjects?.map((subject) => (
+                                      <Badge key={subject} variant="secondary">{subject}</Badge>
+                                    ))}
+                                  </div>
+                                </>
                               </InfoCard>
                             </div>
+
                           </div>
                         </AccordionContent>
                       </AccordionItem>

@@ -33,6 +33,7 @@ const TimelineStageSchema = z.object({
     duration: z.string(),
     focus: z.string(),
     details: z.string(),
+    salary: z.string().optional().describe('The expected salary range for this career stage, if applicable (e.g., for post-education roles). This should be localized based on the user\'s country.'),
 });
 
 const CareerSchema = z.object({
@@ -143,6 +144,8 @@ const careerSuggester = ai.definePrompt({
     tools: [getSalaryData, getSubjectAvailability],
     prompt: `You are a world-class career counselor AI named "Career Compass". Your goal is to provide three detailed, inspiring, and actionable career suggestions based on a synthesis of inputs from multiple contributors about a learner. You must also provide a detailed analysis of the learner's personality and work style.
 
+    **Target Audience:** The output MUST be tailored for a 13-16 year old audience. Use clear, simple, and encouraging language. Avoid jargon and explain complex topics in a relatable way.
+
     **Contributor Profiles & Responses:**
     {{#each contributorResponses}}
     *   **Contributor: {{this.relationship}}**
@@ -166,14 +169,17 @@ const careerSuggester = ai.definePrompt({
     1.  **Synthesize User Profile:** Deeply analyze and synthesize the inputs from ALL contributors, applying the weighting instructions above. Look for common themes and also note interesting differences in perspective.
     2.  **Generate Insights:** First, create the 'insights' object. Synthesize the inputs into a cohesive personality profile, including strengths, motivations, and ideal work style. **Important Punctuation Rule:** For any fields that are single strings (like 'personalityType' or 'workStyle'), ensure the string ends with a period. For fields that are arrays of strings (like 'strengths' or 'motivations'), do NOT add a period to each individual item in the array.
     3.  **Brainstorm Careers:** Based on the synthesized profile, brainstorm a list of potential careers. Select the top three best matches.
-    4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. It is **critical** that the \`description\`, \`reasoning\`, \`timeline\`, \`subjects\`, \`hobbies\`, and \`dailyTasks\` are all highly relevant and specific to the career \`title\`. Do not use generic information. This includes:
-        *   \`title\`, \`description\`, \`reasoning\`, \`matchPercentage\`. For the primary career's \`description\`, include two simple, concrete examples of roles or specializations (e.g., for "Software Engineer", you could add "Examples: Mobile App Developer, Cloud Infrastructure Engineer.").
-        *   A detailed \`timeline\` with at least 4-5 stages, starting from high school and progressing through education, junior, mid-level, and senior roles.
-        *   A list of recommended \`subjects\` that are typically required or highly beneficial for that career.
-        *   A list of \`hobbies\` that promote a "work hard, play hard" lifestyle. These hobbies should complement the likely lifestyle and interests of someone in that career, providing a healthy work-life balance. For example, a high-stress, high-income job might have hobbies related to relaxation or travel.
-        *   \`growth\` outlook, \`workEnvironment\`, and a list of specific, common \`dailyTasks\`.
+    4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. It is **critical** that all text is tailored to a 13-16 year old. This includes:
+        *   \`title\`.
+        *   A practical and relatable \`description\`. Include two simple, concrete examples of roles or specializations for all three careers (e.g., for "Software Engineer", you could add "Examples: Mobile App Developer who builds apps for iPhones, or a Cloud Infrastructure Engineer who helps Netflix stream movies smoothly.").
+        *   \`reasoning\` and \`matchPercentage\`.
+        *   A detailed \`timeline\` with at least 4-5 stages. For each stage that is a job (e.g., Junior, Mid-Level, Senior), you MUST include a localized \`salary\` range. Use the overall salary from the \`getSalaryData\` tool as a baseline to estimate the progression for different experience levels.
+        *   A list of recommended \`subjects\`.
+        *   A list of \`hobbies\` that promote a "work hard, play hard" lifestyle. These hobbies should complement the likely lifestyle and interests of someone in that career, providing a healthy work-life balance.
+        *   A list of specific, common \`dailyTasks\`, explained in simple terms a teenager can understand (e.g., instead of "Debugging complex issues", say "Finding and fixing bugs in the code, like a detective solving a puzzle.").
+        *   \`growth\` outlook and \`workEnvironment\`.
     5.  **Use Tools for Localization (IMPORTANT):**
-        *   For EACH of the three career suggestions, you MUST use the \`getSalaryData\` tool to get a localized salary. Pass the career title and the user's country to the tool.
+        *   For EACH of the three career suggestions, you MUST use the \`getSalaryData\` tool to get a localized salary. This will serve as the baseline for your timeline salary estimates.
         *   After generating the ideal list of recommended \`subjects\` for the PRIMARY career suggestion, you MUST use the \`getSubjectAvailability\` tool to check which are available. In the final output, only include the subjects the tool returns as 'available' in the \`subjects\` array for that primary career. For the other two careers, you can list the ideal subjects without verification.
     6.  **Generate a Featured Professional**: For the primary career, create a fictional 'featuredProfessional' profile. This should include a realistic name, their job title (matching the primary career), and a short, inspiring bio about how they balance their demanding career with a hobby, embodying the 'work hard, play hard' philosophy.
     7.  **Final Output:** Format the entire response according to the CareerSuggestionsOutputSchema. Ensure there are exactly three career suggestions.
