@@ -156,9 +156,14 @@ const careerSuggester = ai.definePrompt({
     *   Location: {{{region}}}, {{{country}}}
     *   High School: {{{highSchool}}}
 
+    **Important Weighting Instructions:**
+    *   Synthesize the perspectives from all contributors, but give the most weight to the learner's own answers (relationship: 'Self'), as they are the most direct source of truth. Their input should be considered approximately 50% more influential than 'Friend', 'Teacher', or 'Mentor'.
+    *   The parent's answers (relationship: 'Parent') are the second most important. Give their input approximately 30% more weight than other contributors.
+    *   When multiple contributors (e.g., the Learner and a Parent) select the same interest, strength, or trait, consider this a very strong signal. This indicates a confirmed area of aptitude or passion that should be heavily emphasized in your analysis and reasoning.
+
     **Process:**
 
-    1.  **Synthesize User Profile:** Deeply analyze and synthesize the inputs from ALL contributors. Look for common themes and also note interesting differences in perspective.
+    1.  **Synthesize User Profile:** Deeply analyze and synthesize the inputs from ALL contributors, applying the weighting instructions above. Look for common themes and also note interesting differences in perspective.
     2.  **Generate Insights:** First, create the 'insights' object. Synthesize the inputs into a cohesive personality profile, including strengths, motivations, and ideal work style. **Ensure every sentence and item in this object ends with a period.**
     3.  **Brainstorm Careers:** Based on the synthesized profile, brainstorm a list of potential careers. Select the top three best matches.
     4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. It is **critical** that the \`description\`, \`reasoning\`, \`timeline\`, \`subjects\`, \`hobbies\`, and \`dailyTasks\` are all highly relevant and specific to the career \`title\`. Do not use generic information. This includes:

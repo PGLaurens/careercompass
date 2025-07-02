@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useCareerCompass } from '@/context/career-compass-context';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -9,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Share2, Copy, CheckCircle, Clock, UserPlus, Pencil } from 'lucide-react';
+import { CheckCircle, Clock, UserPlus, Pencil } from 'lucide-react';
 import type { Contributor } from '@/lib/types';
 
 interface ShareModalProps {
@@ -17,8 +16,7 @@ interface ShareModalProps {
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
-  const { sessionData, addContributor, setCurrentContributorId } = useCareerCompass();
-  const router = useRouter();
+  const { sessionData, addContributor, selectContributorForAssessment } = useCareerCompass();
   const { toast } = useToast();
   
   const [name, setName] = useState('');
@@ -53,9 +51,8 @@ const ShareModal: React.FC<ShareModalProps> = ({ setShow }) => {
   };
 
   const startAssessmentFor = (contributorId: string) => {
-    setCurrentContributorId(contributorId);
+    selectContributorForAssessment(contributorId);
     setShow(false);
-    router.push('/assessment');
   };
 
   return (

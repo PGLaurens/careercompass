@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { type UserType, type SessionData, type Contributor } from '@/lib/types';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface CareerCompassContextType {
   userType: UserType;
@@ -17,6 +17,7 @@ interface CareerCompassContextType {
   isLoading: boolean;
   currentContributorId: string | null;
   setCurrentContributorId: (id: string | null) => void;
+  selectContributorForAssessment: (contributorId: string) => void;
 }
 
 const CareerCompassContext = createContext<CareerCompassContextType | undefined>(undefined);
@@ -38,8 +39,6 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
   const [isLoading, setIsLoading] = useState(true);
   const [currentContributorId, setCurrentContributorId] = useState<string | null>(null);
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     try {
@@ -107,6 +106,13 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
     }
   };
 
+  const selectContributorForAssessment = (contributorId: string) => {
+    const existingResponse = sessionData.allResponses.find(r => r.contributorId === contributorId);
+    setResponses(existingResponse ? existingResponse.responses : {});
+    setCurrentContributorId(contributorId);
+    router.push('/assessment');
+  };
+
   const resetSession = () => {
     setUserTypeState(null);
     setSessionData(initialState);
@@ -129,7 +135,8 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
       resetSession,
       isLoading,
       currentContributorId,
-      setCurrentContributorId
+      setCurrentContributorId,
+      selectContributorForAssessment
     }}>
       {children}
     </CareerCompassContext.Provider>
