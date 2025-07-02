@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -16,6 +17,9 @@ import {
   CheckCircle,
   User,
   Sparkles,
+  Download,
+  UserPlus,
+  Play,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -90,46 +94,30 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                   Explore your personalized career paths based on your unique strengths and interests.
                 </p>
               </div>
-              <Button onClick={() => setShowShareModal(true)}>
-                <Share2 className="mr-2 h-4 w-4" />
-                Share Results
-              </Button>
             </div>
           </header>
 
           <main>
-            <Card className="mb-8 rounded-xl border-2 shadow-none">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <Lightbulb className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground">Your Personal Insights</h3>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <p>
-                  <strong className="text-foreground">Personality Type:</strong>
-                  <span className="text-muted-foreground"> {insights.personalityType}</span>
-                </p>
-                <p>
-                  <strong className="text-foreground">Key Strengths:</strong>
-                  <span className="text-muted-foreground"> {insights.strengths.join(', ')}</span>
-                </p>
-                <p>
-                  <strong className="text-foreground">Motivations:</strong>
-                  <span className="text-muted-foreground"> {insights.motivations.join(', ')}</span>
-                </p>
-                <p>
-                  <strong className="text-foreground">Ideal Work Style:</strong>
-                  <span className="text-muted-foreground"> {insights.workStyle}</span>
-                </p>
-              </CardContent>
+            <Card className="mb-8 rounded-xl border-2 border-primary/10 bg-primary/5 shadow-none">
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                        <Lightbulb className="h-6 w-6 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground">Your Personal Insights</h3>
+                    </div>
+                </CardHeader>
+                <CardContent className="grid sm:grid-cols-2 gap-4 text-sm">
+                    <p><strong className="text-foreground">Personality Type:</strong><span className="text-muted-foreground"> {insights.personalityType}</span></p>
+                    <p><strong className="text-foreground">Key Strengths:</strong><span className="text-muted-foreground"> {insights.strengths.join(', ')}</span></p>
+                    <p><strong className="text-foreground">Motivations:</strong><span className="text-muted-foreground"> {insights.motivations.join(', ')}</span></p>
+                    <p><strong className="text-foreground">Ideal Work Style:</strong><span className="text-muted-foreground"> {insights.workStyle}</span></p>
+                </CardContent>
             </Card>
 
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               <div className="space-y-8 lg:col-span-2">
-                <Card className="overflow-hidden rounded-xl border-2 border-primary/20 bg-primary/5 shadow-none">
+                <Card className="overflow-hidden rounded-xl border-2 border-primary/20 bg-card shadow-none">
                   <div className="p-6">
                     <Badge variant="default" className="mb-2 bg-primary text-primary-foreground">
                       Primary Recommendation
@@ -183,7 +171,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     <ul className="space-y-2">
                       {primaryCareer.dailyTasks?.map((task, index) => (
                         <li key={index} className="flex items-start gap-3 text-sm">
-                          <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-success-foreground" />
+                          <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                           <span className="text-muted-foreground">{task}</span>
                         </li>
                       ))}
@@ -197,7 +185,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                         <ul className="space-y-2">
                           {primaryCareer.hobbies?.map((hobby, index) => (
                             <li key={index} className="flex items-start gap-3 text-sm">
-                              <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-success-foreground" />
+                              <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                               <span className="text-muted-foreground">{hobby}</span>
                             </li>
                           ))}
@@ -208,18 +196,18 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </Card>
 
                 <section>
-                  <h2 className="mb-4 text-xl font-bold text-foreground">Explore Further</h2>
-                  <Accordion type="single" collapsible className="w-full">
+                  <h2 className="mb-4 text-xl font-bold text-foreground">Other Top Suggestions</h2>
+                  <Accordion type="single" collapsible className="w-full rounded-xl border-2">
                     {allCareers.slice(1).map((career, index) => (
-                      <AccordionItem key={index} value={`item-${index}`}>
-                        <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+                      <AccordionItem key={index} value={`item-${index}`} className={index === allCareers.slice(1).length -1 ? 'border-b-0' : ''}>
+                        <AccordionTrigger className="text-lg font-semibold hover:no-underline px-6">
                           <div className="flex items-center gap-4">
                             <Badge variant="secondary">{`#${index + 2}`}</Badge>
                             <span>{career.title}</span>
                           </div>
                         </AccordionTrigger>
-                        <AccordionContent className="pt-2">
-                          <div className="space-y-4 p-4">
+                        <AccordionContent className="pt-2 px-6">
+                          <div className="space-y-4 p-4 bg-accent/30 rounded-lg">
                             <p className="text-muted-foreground">{career.description}</p>
                             <p className="text-sm font-medium text-accent-foreground">{career.reasoning}</p>
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -245,7 +233,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
               </div>
 
               <aside className="space-y-6 lg:col-span-1">
-                <Card className="rounded-xl border-2 shadow-none">
+                <Card className="rounded-xl border-2 shadow-none sticky top-8">
                   <CardHeader>
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -258,29 +246,66 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     <Image src="https://placehold.co/100x100.png" alt={featuredProfessional.name} data-ai-hint="professional portrait" width={80} height={80} className="rounded-full flex-shrink-0" />
                     <div>
                       <p className="font-bold text-foreground">{featuredProfessional.name}</p>
-                      <p className="text-sm font-semibold text-accent-foreground">{featuredProfessional.title}</p>
+                      <p className="text-sm font-semibold text-primary">{featuredProfessional.title}</p>
                       <p className="mt-2 text-xs text-muted-foreground italic">"{featuredProfessional.bio}"</p>
                     </div>
                   </CardContent>
                 </Card>
-
-                <Card className="rounded-xl border-2 bg-card text-card-foreground shadow-none">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold">Ready for the Next Step?</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Connect with a professional career counselor to discuss your results and plan your future.
-                    </p>
-                    <Button variant="default" className="mt-4 w-full">
-                      Book a Consultation
-                    </Button>
-                  </CardContent>
-                </Card>
-                <div className="text-center">
-                  <Button onClick={handleStartOver} variant="ghost" className="text-muted-foreground">
-                    Start Over
-                  </Button>
-                </div>
               </aside>
+            </div>
+
+            <div className="mt-12 space-y-8">
+              <Card className="rounded-xl border-2 shadow-none">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <Share2 className="h-6 w-6 text-primary" />
+                    <h3 className="text-lg font-semibold text-foreground">Share & Save</h3>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                    <Button onClick={() => setShowShareModal(true)} className="w-full">
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Invite More Contributors
+                    </Button>
+                    <Button variant="secondary" className="w-full">
+                        <Download className="mr-2 h-4 w-4" />
+                        Download Full Report
+                    </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-xl border-2 shadow-none">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <Play className="h-6 w-6 text-primary" />
+                    <h3 className="text-lg font-semibold text-foreground">Explore Further</h3>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button variant="outline" className="w-full justify-center">Watch Career Videos</Button>
+                  <Button variant="outline" className="w-full justify-center">Find Online Courses</Button>
+                  <Button variant="outline" className="w-full justify-center">Connect with Professionals</Button>
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-xl border-2 shadow-none bg-accent/50 text-center">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold">Ready for the Next Step?</h3>
+                  <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                    Start building your future today with the right subject choices and career preparation.
+                  </p>
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <Button variant="default">Get Subject Planning Guide</Button>
+                    <Button variant="outline" onClick={() => setShowShareModal(true)}>Add More Perspectives</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="mt-8 text-center">
+                <Button onClick={handleStartOver} variant="ghost" className="text-muted-foreground">
+                    Start Over
+                </Button>
             </div>
           </main>
         </div>
