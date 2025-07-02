@@ -76,6 +76,306 @@ const TimelineItem: React.FC<{ item: TimelineStage; isLast: boolean }> = ({ item
   </div>
 );
 
+const PrimaryCareerCard = ({ career }: { career: Career }) => (
+  <Card className="overflow-hidden rounded-xl border-2 border-primary/20 bg-card shadow-none">
+    <div className="p-6">
+      <Badge variant="default" className="mb-2 bg-primary text-primary-foreground">
+        Primary Recommendation
+      </Badge>
+      <h2 className="text-2xl font-bold text-foreground">{career.title}</h2>
+      <p className="mt-1 text-sm font-semibold text-primary">{career.industry}</p>
+      <p className="mt-4 text-muted-foreground">{career.description}</p>
+      <p className="mt-4 text-sm font-medium text-accent-foreground">{career.reasoning}</p>
+    </div>
+    
+    <div className="border-t bg-card p-6">
+      <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
+        <p>{career.salary}</p>
+      </InfoCard>
+    </div>
+
+    <div className="border-t bg-card p-6">
+      <InfoCard icon={<BookOpen className="h-5 w-5" />} title="Recommended High School Subjects">
+        <>
+          <p className="mb-3 text-sm">Focusing on these subjects will provide a strong foundation for this path:</p>
+          <div className="flex flex-wrap gap-2">
+            {career.subjects?.map((subject) => (
+              <Badge key={subject} variant="secondary">{subject}</Badge>
+            ))}
+          </div>
+        </>
+      </InfoCard>
+    </div>
+
+    <div className="border-t bg-card p-6">
+      <InfoCard icon={<Sprout className="h-5 w-5" />} title="Growth Outlook">
+        <p>{career.growth}</p>
+      </InfoCard>
+    </div>
+
+    <div className="border-t bg-card p-6">
+      <InfoCard icon={<Building className="h-5 w-5" />} title="Work Environment">
+        <p>{career.workEnvironment}</p>
+      </InfoCard>
+    </div>
+
+    <div className="border-t bg-card p-6">
+      <h3 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h3>
+      <ul className="space-y-2">
+        {career.dailyTasks?.map((task, index) => (
+          <li key={index} className="flex items-start gap-3 text-sm">
+            <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+            <span className="text-muted-foreground">{task}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div className="border-t bg-card p-6">
+      <h3 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h3>
+      <div className="space-y-6">
+        {career.timeline?.map((item, index) => (
+          <TimelineItem key={index} item={item} isLast={index === career.timeline!.length - 1} />
+        ))}
+      </div>
+    </div>
+
+    <div className="border-t bg-card p-6">
+      <InfoCard icon={<Sparkles className="h-5 w-5" />} title="Life & Work Balance">
+        <>
+          <p className="mb-3">A fulfilling career is about more than just work. To build a happy and balanced life, consider incorporating hobbies like these:</p>
+          <ul className="space-y-2">
+            {career.hobbies?.map((hobby, index) => (
+              <li key={index} className="flex items-start gap-3 text-sm">
+                <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                <span className="text-muted-foreground">{hobby}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      </InfoCard>
+    </div>
+  </Card>
+);
+
+const AlternativeCareersAccordion = ({ careers }: { careers: Career[] }) => (
+  <section>
+    <h2 className="mb-4 text-xl font-bold text-foreground">Other Top Suggestions</h2>
+    <Accordion type="single" collapsible className="w-full rounded-xl border-2">
+      {careers.map((career, index) => (
+        <AccordionItem key={index} value={`item-${index}`} className={index === careers.length - 1 ? 'border-b-0' : ''}>
+          <AccordionTrigger className="px-6 text-lg font-semibold hover:no-underline">
+            <div className="flex items-center gap-4">
+              <Badge variant="secondary">{`#${index + 2}`}</Badge>
+              <span>{career.title}</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-6 pt-2 pb-6">
+            <div className="space-y-6 pt-4">
+              <p className="text-muted-foreground">{career.description}</p>
+              <p className="text-sm font-medium text-accent-foreground">{career.reasoning}</p>
+              <div className="space-y-px overflow-hidden rounded-lg bg-border">
+                <div className="bg-card p-4">
+                  <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
+                    <p>{career.salary}</p>
+                  </InfoCard>
+                </div>
+                <div className="bg-card p-4">
+                  <InfoCard icon={<Sprout className="h-5 w-5" />} title="Growth Outlook">
+                    <p>{career.growth}</p>
+                  </InfoCard>
+                </div>
+              </div>
+              <div>
+                <h4 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h4>
+                <div className="space-y-6">
+                  {career.timeline?.map((item, i) => (
+                    <TimelineItem key={i} item={item} isLast={i === career.timeline!.length - 1} />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h4 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h4>
+                <ul className="space-y-2">
+                  {career.dailyTasks?.map((task, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm">
+                      <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                      <span className="text-muted-foreground">{task}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <InfoCard icon={<BookOpen className="h-5 w-5" />} title="Recommended Subjects">
+                  <div className="flex flex-wrap gap-2">
+                    {career.subjects?.map((subject) => (
+                      <Badge key={subject} variant="secondary">{subject}</Badge>
+                    ))}
+                  </div>
+                </InfoCard>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  </section>
+);
+
+const AsideContent = ({ professional, jobs }: { professional: FeaturedProfessional, jobs: WackyJob[] }) => (
+    <aside className="space-y-4 lg:col-span-1">
+        <Accordion type="single" collapsible defaultValue="item-1" className="w-full rounded-xl border-2 shadow-none">
+            <AccordionItem value="item-1" className="border-b-0">
+                <AccordionTrigger className="px-4 text-lg font-semibold hover:no-underline">
+                    <div className="flex items-center gap-3">
+                        <User className="h-6 w-6 text-primary" />
+                        <h3 className="text-lg font-semibold text-foreground">Featured Professional</h3>
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pt-2 pb-4">
+                    <div className="flex flex-col items-start gap-2">
+                        <p className="font-bold text-foreground">{professional.name}</p>
+                        <p className="text-sm font-semibold text-primary">{professional.title}</p>
+                        <p className="mt-2 text-xs italic text-muted-foreground">"{professional.bio}"</p>
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
+        
+        <Accordion type="single" collapsible className="w-full rounded-xl border-2 shadow-none">
+            <AccordionItem value="item-1" className="border-b-0">
+                <AccordionTrigger className="px-4 text-lg font-semibold hover:no-underline">
+                    <div className="flex items-center gap-3">
+                        <FlaskConical className="h-6 w-6 text-primary" />
+                        <h3 className="text-lg font-semibold text-foreground">Wacky Job Ideas</h3>
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pt-2 pb-4">
+                    <div className="space-y-4">
+                        {jobs.map((job, index) => (
+                            <div key={index} className="flex flex-col items-start gap-1">
+                                <p className="font-bold text-foreground">{job.title}</p>
+                                <p className="mt-1 text-sm text-muted-foreground">{job.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
+    </aside>
+);
+
+const ComparisonTableCard = ({ careers }: { careers: Career[] }) => (
+    <div className="mt-4 space-y-4">
+        <Accordion type="single" collapsible defaultValue="item-1" className="w-full overflow-hidden rounded-xl border-2 shadow-none">
+            <AccordionItem value="item-1" className="border-b-0">
+                <AccordionTrigger className="bg-card p-6 text-lg font-semibold hover:no-underline">
+                    <div className="flex items-center gap-3">
+                        <Trophy className="h-6 w-6 text-primary" />
+                        <h3 className="text-lg font-semibold text-foreground">Career Comparison</h3>
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="bg-card px-6 pt-0 pb-6">
+                    <Table className="text-xs">
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Career</TableHead>
+                                <TableHead>Salary (Annual)</TableHead>
+                                <TableHead>Work Environment</TableHead>
+                                <TableHead>Growth</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {careers.map((career, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className="font-medium">{career.title}</TableCell>
+                                    <TableCell>{career.salary}</TableCell>
+                                    <TableCell>{career.workEnvironment}</TableCell>
+                                    <TableCell>{career.growth}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
+    </div>
+);
+
+const ActionCards = ({
+  onShareClick,
+  onDownloadClick,
+  isDownloading,
+  primaryCareerTitle,
+  primaryCareerIndustry,
+  country
+}: {
+  onShareClick: () => void;
+  onDownloadClick: () => void;
+  isDownloading: boolean;
+  primaryCareerTitle: string;
+  primaryCareerIndustry: string;
+  country: string;
+}) => (
+  <div className="mt-4 space-y-4" data-no-print="true">
+    <Card className="rounded-xl border-2 shadow-none">
+      <CardHeader>
+        <div className="flex items-center gap-3">
+          <Share2 className="h-6 w-6 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Share & Save</h3>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <Button onClick={onShareClick} className="w-full">
+          <UserPlus className="mr-2 h-4 w-4" />
+          Invite More Contributors
+        </Button>
+        <Button variant="secondary" className="w-full" onClick={onDownloadClick} disabled={isDownloading}>
+          {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+          {isDownloading ? 'Generating PDF...' : 'Download Full Report'}
+        </Button>
+      </CardContent>
+    </Card>
+
+    <Card className="rounded-xl border-2 shadow-none">
+      <CardHeader>
+        <div className="flex items-center gap-3">
+          <Play className="h-6 w-6 text-primary" />
+          <h3 className="text-lg font-semibold text-foreground">Explore Further</h3>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <a href={`https://www.youtube.com/results?search_query=day+in+the+life+of+a+${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+          <Button size="sm" variant="outline" className="w-full justify-center">Watch Career Videos</Button>
+        </a>
+        <a href={`https://www.udemy.com/courses/search/?q=${primaryCareerTitle}&sort=price-asc`} target="_blank" rel="noopener noreferrer" className="block">
+          <Button size="sm" variant="outline" className="w-full justify-center">Find Online Courses</Button>
+        </a>
+        <a href={`https://www.linkedin.com/search/results/people/?keywords=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+          <Button size="sm" variant="outline" className="w-full justify-center">Connect with Professionals</Button>
+        </a>
+        <a href={`https://www.linkedin.com/search/results/companies/?keywords=${primaryCareerIndustry}&location=${country}`} target="_blank" rel="noopener noreferrer" className="block">
+          <Button size="sm" variant="outline" className="w-full justify-center">View Companies</Button>
+        </a>
+      </CardContent>
+    </Card>
+
+    <Card className="rounded-xl border-2 bg-accent/50 text-center shadow-none">
+      <CardContent className="p-6">
+        <h3 className="text-lg font-semibold">Ready for the Next Step?</h3>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          Start building your future today with the right subject choices and career preparation.
+        </p>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Button variant="default">Get Subject Planning Guide</Button>
+          <Button variant="outline" onClick={onShareClick}>Add More Perspectives</Button>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+);
+
+
 const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
   const { resetSession, sessionData } = useCareerCompass();
   const router = useRouter();
@@ -105,7 +405,6 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     doc.querySelectorAll('[data-no-print="true"]').forEach((el) => {
                         (el as HTMLElement).style.display = 'none';
                     });
-                     // Open all accordions for the PDF
                     doc.querySelectorAll('div[data-state="closed"]').forEach(el => {
                         const trigger = el.previousSibling as HTMLElement;
                         if(trigger && trigger.getAttribute('data-state') === 'closed') {
@@ -141,10 +440,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
             console.error("Error generating PDF:", error);
         }
     }
-
     setIsDownloading(false);
   };
-
 
   const allCareers = [primaryCareer, alternativeCareer, thirdCareer];
 
@@ -152,8 +449,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
     <>
       <div className="min-h-screen bg-background">
         <div id="report-content" className="mx-auto max-w-4xl p-4 md:p-6 lg:p-8">
-          <header className="mb-4">
-            <Button variant="ghost" onClick={() => router.back()} data-no-print="true" className="mb-4 -ml-4 text-muted-foreground">
+          <header className="mb-8">
+            <Button variant="ghost" onClick={() => router.back()} data-no-print="true" className="-ml-4 mb-4 text-muted-foreground">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back
             </Button>
             <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
@@ -189,7 +486,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     <h3 className="text-lg font-semibold text-foreground">Your Personal Insights</h3>
                     </div>
                 </CardHeader>
-                <CardContent className="grid sm:grid-cols-2 gap-4 text-sm">
+                <CardContent className="grid gap-4 text-sm sm:grid-cols-2">
                     <p><strong className="text-foreground">Personality Type:</strong><span className="text-muted-foreground"> {insights.personalityType}</span></p>
                     <p><strong className="text-foreground">Key Strengths:</strong><span className="text-muted-foreground"> {insights.strengths.join(', ')}.</span></p>
                     <p><strong className="text-foreground">Motivations:</strong><span className="text-muted-foreground"> {insights.motivations.join(', ')}.</span></p>
@@ -197,293 +494,24 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-3">
-              <div className="space-y-2 lg:col-span-2">
-                <Card className="overflow-hidden rounded-xl border-2 border-primary/20 bg-card shadow-none">
-                  <div className="p-6">
-                    <Badge variant="default" className="mb-2 bg-primary text-primary-foreground">
-                      Primary Recommendation
-                    </Badge>
-                    <h2 className="text-2xl font-bold text-foreground">{primaryCareer.title}</h2>
-                    <p className="mt-1 text-sm font-semibold text-primary">{primaryCareer.industry}</p>
-                    <p className="mt-4 text-muted-foreground">{primaryCareer.description}</p>
-                    <p className="mt-4 text-sm font-medium text-accent-foreground">{primaryCareer.reasoning}</p>
-                  </div>
-                  
-                  <div className="border-t bg-card p-6">
-                    <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
-                        <p>{primaryCareer.salary}</p>
-                    </InfoCard>
-                  </div>
-
-                   <div className="border-t bg-card p-6">
-                    <InfoCard icon={<BookOpen className="h-5 w-5" />} title="Recommended High School Subjects">
-                      <>
-                        <p className="mb-3 text-sm">Focusing on these subjects will provide a strong foundation for this path:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {primaryCareer.subjects?.map((subject) => (
-                            <Badge key={subject} variant="secondary">{subject}</Badge>
-                          ))}
-                        </div>
-                      </>
-                    </InfoCard>
-                  </div>
-
-                   <div className="border-t bg-card p-6">
-                      <InfoCard icon={<Sprout className="h-5 w-5" />} title="Growth Outlook">
-                        <p>{primaryCareer.growth}</p>
-                      </InfoCard>
-                    </div>
-
-                    <div className="border-t bg-card p-6">
-                      <InfoCard icon={<Building className="h-5 w-5" />} title="Work Environment">
-                        <p>{primaryCareer.workEnvironment}</p>
-                      </InfoCard>
-                    </div>
-
-                    <div className="border-t bg-card p-6">
-                      <h3 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h3>
-                      <ul className="space-y-2">
-                        {primaryCareer.dailyTasks?.map((task, index) => (
-                          <li key={index} className="flex items-start gap-3 text-sm">
-                            <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                            <span className="text-muted-foreground">{task}</span>
-                          </li>
-                        ))}
-                      </ul>
-                   </div>
-
-                  <div className="border-t bg-card p-6">
-                    <h3 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h3>
-                    <div className="space-y-6">
-                      {primaryCareer.timeline?.map((item, index) => (
-                        <TimelineItem key={index} item={item} isLast={index === primaryCareer.timeline!.length - 1} />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="border-t bg-card p-6">
-                    <InfoCard icon={<Sparkles className="h-5 w-5" />} title="Life & Work Balance">
-                      <>
-                        <p className="mb-3">A fulfilling career is about more than just work. To build a happy and balanced life, consider incorporating hobbies like these:</p>
-                        <ul className="space-y-2">
-                          {primaryCareer.hobbies?.map((hobby, index) => (
-                            <li key={index} className="flex items-start gap-3 text-sm">
-                              <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                              <span className="text-muted-foreground">{hobby}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    </InfoCard>
-                  </div>
-                </Card>
-
-                <section>
-                  <h2 className="mb-4 text-xl font-bold text-foreground">Other Top Suggestions</h2>
-                  <Accordion type="single" collapsible className="w-full rounded-xl border-2">
-                    {allCareers.slice(1).map((career, index) => (
-                      <AccordionItem key={index} value={`item-${index}`} className={index === allCareers.slice(1).length -1 ? 'border-b-0' : ''}>
-                        <AccordionTrigger className="text-lg font-semibold hover:no-underline px-6">
-                          <div className="flex items-center gap-4">
-                            <Badge variant="secondary">{`#${index + 2}`}</Badge>
-                            <span>{career.title}</span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="pt-2 pb-6 px-6">
-                          <div className="space-y-6 pt-4">
-                            <p className="text-muted-foreground">{career.description}</p>
-                            <p className="text-sm font-medium text-accent-foreground">{career.reasoning}</p>
-                            
-                            <div className="space-y-px bg-border rounded-lg overflow-hidden">
-                                <div className="bg-card p-4">
-                                  <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
-                                    <p>{career.salary}</p>
-                                  </InfoCard>
-                                </div>
-                                <div className="bg-card p-4">
-                                  <InfoCard icon={<Sprout className="h-5 w-5" />} title="Growth Outlook">
-                                    <p>{career.growth}</p>
-                                  </InfoCard>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <h4 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h4>
-                                <div className="space-y-6">
-                                  {career.timeline?.map((item, index) => (
-                                    <TimelineItem key={index} item={item} isLast={index === career.timeline!.length - 1} />
-                                  ))}
-                                </div>
-                            </div>
-
-                            <div>
-                                <h4 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h4>
-                                <ul className="space-y-2">
-                                  {career.dailyTasks?.map((task, index) => (
-                                    <li key={index} className="flex items-start gap-3 text-sm">
-                                      <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                                      <span className="text-muted-foreground">{task}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                            </div>
-
-                            <div>
-                              <InfoCard icon={<BookOpen className="h-5 w-5" />} title="Recommended Subjects">
-                                <>
-                                  <div className="flex flex-wrap gap-2">
-                                    {career.subjects?.map((subject) => (
-                                      <Badge key={subject} variant="secondary">{subject}</Badge>
-                                    ))}
-                                  </div>
-                                </>
-                              </InfoCard>
-                            </div>
-
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </section>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div className="space-y-4 lg:col-span-2">
+                <PrimaryCareerCard career={primaryCareer} />
+                <AlternativeCareersAccordion careers={[alternativeCareer, thirdCareer]} />
               </div>
-
-              <aside className="space-y-2 lg:col-span-1">
-                <Accordion type="single" collapsible defaultValue="item-1" className="w-full rounded-xl border-2 shadow-none">
-                    <AccordionItem value="item-1" className="border-b-0">
-                        <AccordionTrigger className="text-lg font-semibold hover:no-underline px-4">
-                           <div className="flex items-center gap-3">
-                                <User className="h-6 w-6 text-primary" />
-                                <h3 className="text-lg font-semibold text-foreground">Featured Professional</h3>
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="pt-2 pb-4 px-4">
-                            <div className="flex flex-col items-start gap-2">
-                                <p className="font-bold text-foreground">{featuredProfessional.name}</p>
-                                <p className="text-sm font-semibold text-primary">{featuredProfessional.title}</p>
-                                <p className="mt-2 text-xs text-muted-foreground italic">"{featuredProfessional.bio}"</p>
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-                
-                 <Accordion type="single" collapsible className="w-full rounded-xl border-2 shadow-none">
-                    <AccordionItem value="item-1" className="border-b-0">
-                        <AccordionTrigger className="text-lg font-semibold hover:no-underline px-4">
-                           <div className="flex items-center gap-3">
-                                <FlaskConical className="h-6 w-6 text-primary" />
-                                <h3 className="text-lg font-semibold text-foreground">Wacky Job Ideas</h3>
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="pt-2 pb-4 px-4">
-                            <div className="space-y-4">
-                                {wackyJobs.map((job, index) => (
-                                    <div key={index} className="flex flex-col items-start gap-1">
-                                        <p className="font-bold text-foreground">{job.title}</p>
-                                        <p className="mt-1 text-sm text-muted-foreground">{job.description}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-              </aside>
+              <AsideContent professional={featuredProfessional} jobs={wackyJobs} />
             </div>
+            
+            <ComparisonTableCard careers={allCareers} />
 
-            <div className="mt-2 space-y-2">
-                <Accordion type="single" collapsible defaultValue="item-1" className="w-full rounded-xl border-2 shadow-none overflow-hidden">
-                    <AccordionItem value="item-1" className="border-b-0">
-                        <AccordionTrigger className="text-lg font-semibold hover:no-underline p-6 bg-card">
-                            <div className="flex items-center gap-3">
-                                <Trophy className="h-6 w-6 text-primary" />
-                                <h3 className="text-lg font-semibold text-foreground">Career Comparison</h3>
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="px-6 pb-6 pt-0 bg-card">
-                            <Table className="text-xs">
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Career</TableHead>
-                                        <TableHead>Salary (Annual)</TableHead>
-                                        <TableHead>Work Environment</TableHead>
-                                        <TableHead>Growth</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {allCareers.map((career, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell className="font-medium">{career.title}</TableCell>
-                                            <TableCell>{career.salary}</TableCell>
-                                            <TableCell>{career.workEnvironment}</TableCell>
-                                            <TableCell>{career.growth}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-
-              <Card className="rounded-xl border-2 shadow-none" data-no-print="true">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <Share2 className="h-6 w-6 text-primary" />
-                    <h3 className="text-lg font-semibold text-foreground">Share & Save</h3>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                    <Button onClick={() => setShowShareModal(true)} className="w-full">
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Invite More Contributors
-                    </Button>
-                    <Button variant="secondary" className="w-full" onClick={handleDownload} disabled={isDownloading}>
-                        {isDownloading ? (
-                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                           <Download className="mr-2 h-4 w-4" />
-                        )}
-                        {isDownloading ? 'Generating PDF...' : 'Download Full Report'}
-                    </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-xl border-2 shadow-none" data-no-print="true">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <Play className="h-6 w-6 text-primary" />
-                    <h3 className="text-lg font-semibold text-foreground">Explore Further</h3>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    <a href={`https://www.youtube.com/results?search_query=day+in+the+life+of+a+${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
-                        <Button size="sm" variant="outline" className="w-full justify-center">Watch Career Videos</Button>
-                    </a>
-                    <a href={`https://www.udemy.com/courses/search/?q=${primaryCareerTitle}&sort=price-asc`} target="_blank" rel="noopener noreferrer" className="block">
-                        <Button size="sm" variant="outline" className="w-full justify-center">Find Online Courses</Button>
-                    </a>
-                     <a href={`https://www.linkedin.com/search/results/people/?keywords=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
-                        <Button size="sm" variant="outline" className="w-full justify-center">Connect with Professionals</Button>
-                    </a>
-                     <a href={`https://www.linkedin.com/search/results/companies/?keywords=${primaryCareerIndustry}&location=${country}`} target="_blank" rel="noopener noreferrer" className="block">
-                        <Button size="sm" variant="outline" className="w-full justify-center">View Companies</Button>
-                    </a>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-xl border-2 shadow-none bg-accent/50 text-center" data-no-print="true">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold">Ready for the Next Step?</h3>
-                  <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-                    Start building your future today with the right subject choices and career preparation.
-                  </p>
-                  <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Button variant="default">Get Subject Planning Guide</Button>
-                    <Button variant="outline" onClick={() => setShowShareModal(true)}>Add More Perspectives</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <ActionCards
+              onShareClick={() => setShowShareModal(true)}
+              onDownloadClick={handleDownload}
+              isDownloading={isDownloading}
+              primaryCareerTitle={primaryCareerTitle}
+              primaryCareerIndustry={primaryCareerIndustry}
+              country={country}
+            />
             
             <div className="mt-8 text-center" data-no-print="true">
                 <Button onClick={handleStartOver} variant="ghost" className="text-muted-foreground">
