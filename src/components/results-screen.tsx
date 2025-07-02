@@ -23,6 +23,7 @@ import {
   UserPlus,
   Play,
   Loader2,
+  TriangleAlert,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,6 +31,7 @@ import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import Image from 'next/image';
 import ShareModal from './share-modal';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
 interface ResultsScreenProps {
   results: CareerResults;
@@ -148,6 +150,16 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
           </header>
 
           <main>
+            {results.isFallback && (
+                <Alert variant="warning" className="mb-8" data-no-print="true">
+                    <TriangleAlert className="h-4 w-4" />
+                    <AlertTitle>Displaying Sample Results</AlertTitle>
+                    <AlertDescription>
+                        We couldn't generate personalized results at this time. The report below is a high-quality sample to show you what to expect. Please try again later for your personalized analysis.
+                    </AlertDescription>
+                </Alert>
+            )}
+
             <Card className="mb-8 rounded-xl border-2 border-primary/10 bg-primary/5 shadow-none">
                 <CardHeader>
                     <div className="flex items-center gap-3">

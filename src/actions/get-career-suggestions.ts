@@ -99,6 +99,7 @@ export async function getCareerSuggestionsAction({ responses, country, region, h
             thirdCareer: result.careerSuggestions[2],
             insights: result.insights,
             featuredProfessional: result.featuredProfessional,
+            isFallback: false,
         };
 
         return { success: true, data: finalResults };
@@ -120,6 +121,7 @@ export async function getCareerSuggestionsAction({ responses, country, region, h
                 idealEnvironment: "A place with clear objectives.",
                 leadershipStyle: "Leads by example."
             },
+            isFallback: true,
         };
         
         return { success: true, data: fallbackResults };

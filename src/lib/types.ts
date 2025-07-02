@@ -74,4 +74,5 @@ export interface CareerResults {
     leadershipStyle: string;
   };
   featuredProfessional: FeaturedProfessional;
+  isFallback?: boolean;
 }
