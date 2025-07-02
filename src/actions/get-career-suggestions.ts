@@ -37,7 +37,8 @@ const fallbackCareers: Career[] = [
         salary: "$ 80,400 - 180,000 / year",
         growth: "Consistently high demand",
         workEnvironment: "Tech companies of all sizes, from startups to corporations",
-        dailyTasks: ["Writing and testing code", "Collaborating with a team using Git", "Debugging complex issues", "Designing new software features"]
+        dailyTasks: ["Writing and testing code", "Collaborating with a team using Git", "Debugging complex issues", "Designing new software features"],
+        industry: "Information Technology and Services",
     },
     {
         title: "UX/UI Designer",
@@ -55,7 +56,8 @@ const fallbackCareers: Career[] = [
         salary: "$ 54,000 - 120,000 / year",
         growth: "Excellent demand in tech",
         workEnvironment: "Creative, collaborative, tech-forward companies",
-        dailyTasks: ["Researching user needs", "Creating wireframes and prototypes", "Presenting designs to stakeholders"]
+        dailyTasks: ["Researching user needs", "Creating wireframes and prototypes", "Presenting designs to stakeholders"],
+        industry: "Design",
     },
     {
         title: "Data Scientist",
@@ -73,7 +75,8 @@ const fallbackCareers: Career[] = [
         salary: "$ 90,000 - 198,000 / year",
         growth: "Extremely high demand",
         workEnvironment: "Tech companies, finance, healthcare, research labs",
-        dailyTasks: ["Collecting and cleaning large datasets", "Building machine learning models", "Presenting findings to business leaders"]
+        dailyTasks: ["Collecting and cleaning large datasets", "Building machine learning models", "Presenting findings to business leaders"],
+        industry: "Data Science",
     }
 ];
 

@@ -55,6 +55,7 @@ export interface Career {
   growth?: string;
   workEnvironment?: string;
   dailyTasks?: string[];
+  industry?: string;
 }
 
 export interface FeaturedProfessional {

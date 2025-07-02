@@ -77,13 +77,15 @@ const TimelineItem: React.FC<{ item: TimelineStage; isLast: boolean }> = ({ item
 );
 
 const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
-  const { resetSession } = useCareerCompass();
+  const { resetSession, sessionData } = useCareerCompass();
   const router = useRouter();
   const [showShareModal, setShowShareModal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const { primaryCareer, alternativeCareer, thirdCareer, insights, featuredProfessional, wackyJobs } = results;
   
   const primaryCareerTitle = encodeURIComponent(primaryCareer.title);
+  const primaryCareerIndustry = encodeURIComponent(primaryCareer.industry || primaryCareer.title);
+  const country = encodeURIComponent(sessionData.country);
 
   const handleStartOver = () => {
     resetSession();
@@ -213,7 +215,19 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     </InfoCard>
                   </div>
 
-                  <div className="border-t bg-card p-6">
+                   <div className="border-t bg-card p-6">
+                    <h3 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h3>
+                    <ul className="space-y-2">
+                      {primaryCareer.dailyTasks?.map((task, index) => (
+                        <li key={index} className="flex items-start gap-3 text-sm">
+                          <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                          <span className="text-muted-foreground">{task}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                   <div className="border-t bg-card p-6">
                     <InfoCard icon={<BookOpen className="h-5 w-5" />} title="Recommended High School Subjects">
                       <>
                         <p className="mb-3 text-sm">Focusing on these subjects will provide a strong foundation for this path:</p>
@@ -237,18 +251,6 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                         <p>{primaryCareer.workEnvironment}</p>
                       </InfoCard>
                     </div>
-
-                  <div className="border-t bg-card p-6">
-                    <h3 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h3>
-                    <ul className="space-y-2">
-                      {primaryCareer.dailyTasks?.map((task, index) => (
-                        <li key={index} className="flex items-start gap-3 text-sm">
-                          <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                          <span className="text-muted-foreground">{task}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
 
                   <div className="border-t bg-card p-6">
                     <h3 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h3>
@@ -462,7 +464,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                      <a href={`https://www.linkedin.com/search/results/people/?keywords=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
                         <Button size="sm" variant="outline" className="w-full justify-center">Connect with Professionals</Button>
                     </a>
-                     <a href={`https://www.linkedin.com/search/results/companies/?keywords=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+                     <a href={`https://www.linkedin.com/search/results/companies/?keywords=${primaryCareerIndustry}&location=${country}`} target="_blank" rel="noopener noreferrer" className="block">
                         <Button size="sm" variant="outline" className="w-full justify-center">View Companies</Button>
                     </a>
                 </CardContent>

@@ -49,6 +49,7 @@ const CareerSchema = z.object({
     growth: z.string().describe('The growth outlook for this career.'),
     workEnvironment: z.string().describe('The typical work environment for this career.'),
     dailyTasks: z.array(z.string()).describe('A list of common daily tasks for someone in this career.'),
+    industry: z.string().describe('The primary industry for this career (e.g., "Information Technology and Services", "Healthcare", "Financial Services"). This should be a category that works well for a LinkedIn company search.'),
 });
 
 const InsightsSchema = z.object({
@@ -116,7 +117,7 @@ const getSalaryData = ai.defineTool(
       const lowMonthly = Math.round(lowAnnual / 12);
       const highMonthly = Math.round(highAnnual / 12);
       
-      const annualRange = `${countryData.symbol} ${Math.round(lowAnnual).toLocaleString()} - ${Math.round(highAnnual).toLocaleString()} ${countryData.currency} / year`;
+      const annualRange = `${countryData.symbol} ${Math.round(lowAnnual).toLocaleString()} - ${Math.round(highAnnual).toLocaleString()} ${countryData.currency}`;
       const monthlyRange = `${countryData.symbol} ${lowMonthly.toLocaleString()} - ${highMonthly.toLocaleString()} / month`;
 
       return { annual: annualRange, monthly: monthlyRange };
@@ -194,7 +195,7 @@ const careerSuggester = ai.definePrompt({
         *   A list of recommended \`subjects\`.
         *   A list of \`hobbies\` that promote a "work hard, play hard" lifestyle. These hobbies should complement the likely lifestyle and interests of someone in that career, providing a healthy work-life balance.
         *   A list of specific, common \`dailyTasks\`, explained in simple terms a teenager can understand (e.g., instead of "Debugging complex issues", say "Finding and fixing bugs in the code, like a detective solving a puzzle.").
-        *   \`growth\` outlook and \`workEnvironment\`.
+        *   \`growth\` outlook, \`workEnvironment\`, and an \`industry\` suitable for a LinkedIn company search.
     5.  **Use Tools for Localization (IMPORTANT):**
         *   For EACH of the three career suggestions, you MUST use the \`getSalaryData\` tool to get a localized salary. The tool returns an object with 'annual' and 'monthly' properties. You MUST use the 'annual' property for the main \`salary\` field of the career. The 'monthly' property will serve as the baseline for your timeline salary estimates.
         *   After generating the ideal list of recommended \`subjects\` for the PRIMARY career suggestion, you MUST use the \`getSubjectAvailability\` tool to check which are available. In the final output, only include the subjects the tool returns as 'available' in the \`subjects\` array for that primary career. For the other two careers, you can list the ideal subjects without verification.
