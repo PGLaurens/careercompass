@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Users, GraduationCap, Compass } from 'lucide-react';
+import { Users, GraduationCap, Compass, CheckCircle } from 'lucide-react';
 import { useCareerCompass } from '@/context/career-compass-context';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ const WelcomeScreen = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <header className="text-center mb-10">
+      <header className="text-center mb-10 w-full max-w-lg">
         <div className="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
           <Compass className="w-10 h-10 text-primary" />
         </div>
@@ -22,6 +22,27 @@ const WelcomeScreen = () => {
           Discover the perfect career path with AI-powered guidance.
         </p>
       </header>
+
+      <div className="w-full max-w-lg space-y-4 mb-10">
+        <div className="bg-warning text-warning-foreground rounded-xl border border-warning-foreground/20 p-4">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Users className="w-5 h-5" />
+            <h4 className="font-semibold text-base">Better Together</h4>
+          </div>
+          <p className="text-sm text-center text-balance">
+            Invite up to 5 family members or friends to contribute their perspectives for more accurate results
+          </p>
+        </div>
+        <div className="bg-success text-success-foreground rounded-xl border border-success-foreground/20 p-4">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <CheckCircle className="w-5 h-5" />
+            <h4 className="font-semibold text-base">100% Free</h4>
+          </div>
+          <p className="text-sm text-center text-balance">
+            Complete career guidance with detailed reports at no cost
+          </p>
+        </div>
+      </div>
 
       <main className="w-full max-w-lg">
         <Card className="shadow-none border-none bg-transparent w-full">
