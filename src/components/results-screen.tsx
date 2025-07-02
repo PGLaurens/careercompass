@@ -81,7 +81,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
   const router = useRouter();
   const [showShareModal, setShowShareModal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const { primaryCareer, alternativeCareer, thirdCareer, insights, featuredProfessional, wackyJob } = results;
+  const { primaryCareer, alternativeCareer, thirdCareer, insights, featuredProfessional, wackyJobs } = results;
   
   const primaryCareerTitle = encodeURIComponent(primaryCareer.title);
 
@@ -195,8 +195,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-              <div className="space-y-4 lg:col-span-2">
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-3">
+              <div className="space-y-2 lg:col-span-2">
                 <Card className="overflow-hidden rounded-xl border-2 border-primary/20 bg-card shadow-none">
                   <div className="p-6">
                     <Badge variant="default" className="mb-2 bg-primary text-primary-foreground">
@@ -345,7 +345,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </section>
               </div>
 
-              <aside className="space-y-4 lg:col-span-1">
+              <aside className="space-y-2 lg:col-span-1">
                 <Accordion type="single" collapsible defaultValue="item-1" className="w-full rounded-xl border-2 shadow-none">
                     <AccordionItem value="item-1" className="border-b-0">
                         <AccordionTrigger className="text-lg font-semibold hover:no-underline px-4">
@@ -369,13 +369,17 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                         <AccordionTrigger className="text-lg font-semibold hover:no-underline px-4">
                            <div className="flex items-center gap-3">
                                 <FlaskConical className="h-6 w-6 text-primary" />
-                                <h3 className="text-lg font-semibold text-foreground">Wacky Job Idea</h3>
+                                <h3 className="text-lg font-semibold text-foreground">Wacky Job Ideas</h3>
                             </div>
                         </AccordionTrigger>
                         <AccordionContent className="pt-2 pb-4 px-4">
-                            <div className="flex flex-col items-start gap-2">
-                                <p className="font-bold text-foreground">{wackyJob.title}</p>
-                                <p className="mt-1 text-sm text-muted-foreground">{wackyJob.description}</p>
+                            <div className="space-y-4">
+                                {wackyJobs.map((job, index) => (
+                                    <div key={index} className="flex flex-col items-start gap-1">
+                                        <p className="font-bold text-foreground">{job.title}</p>
+                                        <p className="mt-1 text-sm text-muted-foreground">{job.description}</p>
+                                    </div>
+                                ))}
                             </div>
                         </AccordionContent>
                     </AccordionItem>
@@ -383,37 +387,39 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
               </aside>
             </div>
 
-            <div className="mt-6 space-y-4">
-                <Card className="rounded-xl border-2 shadow-none">
-                    <CardHeader>
-                        <div className="flex items-center gap-3">
-                            <Trophy className="h-6 w-6 text-primary" />
-                            <h3 className="text-lg font-semibold text-foreground">Career Comparison</h3>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Career</TableHead>
-                                    <TableHead>Salary (Annual)</TableHead>
-                                    <TableHead>Work Environment</TableHead>
-                                    <TableHead>Growth</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {allCareers.map((career, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell className="font-medium">{career.title}</TableCell>
-                                        <TableCell>{career.salary}</TableCell>
-                                        <TableCell>{career.workEnvironment}</TableCell>
-                                        <TableCell>{career.growth}</TableCell>
+            <div className="mt-6 space-y-2">
+                <Accordion type="single" collapsible defaultValue="item-1" className="w-full rounded-xl border-2 shadow-none overflow-hidden">
+                    <AccordionItem value="item-1" className="border-b-0">
+                        <AccordionTrigger className="text-lg font-semibold hover:no-underline p-6 bg-card">
+                            <div className="flex items-center gap-3">
+                                <Trophy className="h-6 w-6 text-primary" />
+                                <h3 className="text-lg font-semibold text-foreground">Career Comparison</h3>
+                            </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-6 pb-6 pt-0 bg-card">
+                            <Table className="text-xs">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Career</TableHead>
+                                        <TableHead>Salary (Annual)</TableHead>
+                                        <TableHead>Work Environment</TableHead>
+                                        <TableHead>Growth</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                                </TableHeader>
+                                <TableBody>
+                                    {allCareers.map((career, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell className="font-medium">{career.title}</TableCell>
+                                            <TableCell>{career.salary}</TableCell>
+                                            <TableCell>{career.workEnvironment}</TableCell>
+                                            <TableCell>{career.growth}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
 
               <Card className="rounded-xl border-2 shadow-none" data-no-print="true">
                 <CardHeader>

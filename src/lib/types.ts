@@ -82,6 +82,6 @@ export interface CareerResults {
     leadershipStyle: string;
   };
   featuredProfessional: FeaturedProfessional;
-  wackyJob: WackyJob;
+  wackyJobs: WackyJob[];
   isFallback?: boolean;
 }

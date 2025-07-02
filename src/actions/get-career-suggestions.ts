@@ -9,10 +9,16 @@ const fallbackProfessional: FeaturedProfessional = {
     bio: "Balancing a passion for innovative tech with a love for mountain biking and the great outdoors."
 };
 
-const fallbackWackyJob: WackyJob = {
-    title: "AI Dungeon Master",
-    description: "Designs and runs complex, AI-driven narrative experiences for tabletop role-playing games, creating dynamic stories that adapt in real-time to player choices."
-};
+const fallbackWackyJobs: WackyJob[] = [
+    {
+        title: "AI Dungeon Master",
+        description: "Designs and runs complex, AI-driven narrative experiences for tabletop role-playing games, creating dynamic stories that adapt in real-time to player choices."
+    },
+    {
+        title: "Professional Ethical Hacker",
+        description: "Companies hire you to legally hack into their systems to find security weaknesses before malicious hackers can exploit them. It's like being a digital security detective."
+    }
+];
 
 const fallbackCareers: Career[] = [
     {
@@ -23,12 +29,12 @@ const fallbackCareers: Career[] = [
         timeline: [
             { stage: "High School", duration: "Years 10-12", focus: "Computer Science, Mathematics, Physics", details: "Build personal projects and contribute to open source." },
             { stage: "Higher Education", duration: "3-4 years", focus: "Degree in Computer Science or Software Engineering", details: "Gain internship experience to build skills and network." },
-            { stage: "Junior Engineer", duration: "1-2 years", focus: "Writing code, fixing bugs, learning the codebase", details: "Work closely with senior engineers to grow.", salary: "$5,000 - $8,000 / month" },
-            { stage: "Senior Engineer", duration: "3-5+ years", focus: "Designing systems, mentoring others, and leading projects.", details: "Specialize in an area like cloud computing or AI.", salary: "$9,000 - $15,000+ / month" },
+            { stage: "Junior Engineer", duration: "1-2 years", focus: "Writing code, fixing bugs, learning the codebase", details: "Work closely with senior engineers to grow.", salary: "$ 5,000 - 8,000 / month" },
+            { stage: "Senior Engineer", duration: "3-5+ years", focus: "Designing systems, mentoring others, and leading projects.", details: "Specialize in an area like cloud computing or AI.", salary: "$ 9,000 - 15,000+ / month" },
         ],
         subjects: ["Computer Science", "Mathematics", "Physics"],
         hobbies: ["Building apps or websites", "Contributing to open-source projects", "Robotics clubs"],
-        salary: "$80,400 - $180,000 / year",
+        salary: "$ 80,400 - 180,000 / year",
         growth: "Consistently high demand",
         workEnvironment: "Tech companies of all sizes, from startups to corporations",
         dailyTasks: ["Writing and testing code", "Collaborating with a team using Git", "Debugging complex issues", "Designing new software features"]
@@ -41,12 +47,12 @@ const fallbackCareers: Career[] = [
         timeline: [
             { stage: "High School", duration: "Years 10-12", focus: "Art/Design, Psychology, Computer Science", details: "Build a portfolio of creative projects." },
             { stage: "Higher Education", duration: "3-4 years", focus: "Degree in Design, Psychology, or HCI", details: "Specialize in Human-Computer Interaction." },
-            { stage: "Junior Designer", duration: "1-2 years", focus: "Creating wireframes, mockups, and user flows under supervision.", details: "Conduct user research and usability testing.", salary: "$4,000 - $6,500 / month" },
-            { stage: "Senior Designer", duration: "3-5+ years", focus: "Leading design projects, mentoring junior designers, and defining product strategy.", details: "Develop and maintain design systems.", salary: "$7,000 - $10,000+ / month" }
+            { stage: "Junior Designer", duration: "1-2 years", focus: "Creating wireframes, mockups, and user flows under supervision.", details: "Conduct user research and usability testing.", salary: "$ 4,000 - 6,500 / month" },
+            { stage: "Senior Designer", duration: "3-5+ years", focus: "Leading design projects, mentoring junior designers, and defining product strategy.", details: "Develop and maintain design systems.", salary: "$ 7,000 - 10,000+ / month" }
         ],
         subjects: ["Art/Design", "Psychology", "Computer Science"],
         hobbies: ["Digital Art & Illustration", "Photography", "Visiting art galleries"],
-        salary: "$54,000 - $120,000 / year",
+        salary: "$ 54,000 - 120,000 / year",
         growth: "Excellent demand in tech",
         workEnvironment: "Creative, collaborative, tech-forward companies",
         dailyTasks: ["Researching user needs", "Creating wireframes and prototypes", "Presenting designs to stakeholders"]
@@ -59,12 +65,12 @@ const fallbackCareers: Career[] = [
         timeline: [
             { stage: "High School", duration: "Years 10-12", focus: "Advanced Mathematics, Statistics, Computer Science", details: "Participate in math or coding competitions." },
             { stage: "Undergraduate Degree", duration: "4 years", focus: "Degree in Statistics, Math, CS, or Economics", details: "Work on data analysis projects." },
-            { stage: "Junior Data Scientist", duration: "1-3 years", focus: "Cleaning data, running analyses, and building basic models.", details: "Learn from senior scientists and domain experts.", salary: "$6,000 - $9,000 / month" },
-            { stage: "Senior Data Scientist", duration: "4-6+ years", focus: "Developing complex models, leading data strategy, and communicating insights to leadership.", details: "Publish research or speak at conferences.", salary: "$10,000 - $16,500+ / month" }
+            { stage: "Junior Data Scientist", duration: "1-3 years", focus: "Cleaning data, running analyses, and building basic models.", details: "Learn from senior scientists and domain experts.", salary: "$ 6,000 - 9,000 / month" },
+            { stage: "Senior Data Scientist", duration: "4-6+ years", focus: "Developing complex models, leading data strategy, and communicating insights to leadership.", details: "Publish research or speak at conferences.", salary: "$ 10,000 - 16,500+ / month" }
         ],
         subjects: ["Mathematics", "Computer Science", "Statistics"],
         hobbies: ["Competitive programming (e.g., Kaggle)", "Building data visualizations", "Reading about AI advancements"],
-        salary: "$90,000 - $198,000 / year",
+        salary: "$ 90,000 - 198,000 / year",
         growth: "Extremely high demand",
         workEnvironment: "Tech companies, finance, healthcare, research labs",
         dailyTasks: ["Collecting and cleaning large datasets", "Building machine learning models", "Presenting findings to business leaders"]
@@ -105,7 +111,7 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
 
         const result = await generateCareerSuggestions(aiInput);
         
-        if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.featuredProfessional || !result.wackyJob) {
+        if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.featuredProfessional || !result.wackyJobs || result.wackyJobs.length < 2) {
             throw new Error("AI returned insufficient or invalid data.");
         }
 
@@ -115,7 +121,7 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
             thirdCareer: result.careerSuggestions[2],
             insights: result.insights,
             featuredProfessional: result.featuredProfessional,
-            wackyJob: result.wackyJob,
+            wackyJobs: result.wackyJobs,
             isFallback: false,
         };
 
@@ -130,7 +136,7 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
             thirdCareer: fallbackCareers[2],
             insights: fallbackInsights,
             featuredProfessional: fallbackProfessional,
-            wackyJob: fallbackWackyJob,
+            wackyJobs: fallbackWackyJobs,
             isFallback: true,
         };
 

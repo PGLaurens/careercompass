@@ -77,7 +77,7 @@ const CareerSuggestionsOutputSchema = z.object({
   careerSuggestions: z.array(CareerSchema).length(3).describe('A list of exactly 3 career suggestions, from best match to third best match.'),
   insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers. Follow the punctuation rules in the InsightsSchema descriptions: end all single-string fields with a period, but do not add periods to items in string arrays."),
   featuredProfessional: FeaturedProfessionalSchema.describe("A profile of a fictional professional representing the primary career path."),
-  wackyJob: WackyJobSchema.describe("A single, unusual, and interesting job suggestion."),
+  wackyJobs: z.array(WackyJobSchema).length(2).describe("A list of exactly 2 unusual, and interesting job suggestions to spark curiosity."),
 });
 export type CareerSuggestionsOutput = z.infer<typeof CareerSuggestionsOutputSchema>;
 
@@ -115,8 +115,8 @@ const getSalaryData = ai.defineTool(
       const lowMonthly = Math.round(lowAnnual / 12);
       const highMonthly = Math.round(highAnnual / 12);
       
-      const annualRange = `${countryData.symbol}${Math.round(lowAnnual).toLocaleString()} - ${countryData.symbol}${Math.round(highAnnual).toLocaleString()} ${countryData.currency} / year`;
-      const monthlyRange = `${countryData.symbol}${lowMonthly.toLocaleString()} - ${countryData.symbol}${highMonthly.toLocaleString()} ${countryData.currency} / month`;
+      const annualRange = `${countryData.symbol} ${Math.round(lowAnnual).toLocaleString()} - ${Math.round(highAnnual).toLocaleString()} ${countryData.currency} / year`;
+      const monthlyRange = `${countryData.symbol} ${lowMonthly.toLocaleString()} - ${highMonthly.toLocaleString()} / month`;
 
       return { annual: annualRange, monthly: monthlyRange };
     }
@@ -198,7 +198,7 @@ const careerSuggester = ai.definePrompt({
         *   For EACH of the three career suggestions, you MUST use the \`getSalaryData\` tool to get a localized salary. The tool returns an object with 'annual' and 'monthly' properties. You MUST use the 'annual' property for the main \`salary\` field of the career. The 'monthly' property will serve as the baseline for your timeline salary estimates.
         *   After generating the ideal list of recommended \`subjects\` for the PRIMARY career suggestion, you MUST use the \`getSubjectAvailability\` tool to check which are available. In the final output, only include the subjects the tool returns as 'available' in the \`subjects\` array for that primary career. For the other two careers, you can list the ideal subjects without verification.
     6.  **Generate a Featured Professional**: For the primary career, create a fictional 'featuredProfessional' profile. This should include a realistic name, their job title (matching the primary career), and a short, inspiring bio about how they balance their demanding career with a hobby, embodying the 'work hard, play hard' philosophy.
-    7.  **Generate a Wacky Job**: Generate a 'wackyJob' suggestion. This should be an unusual, specialized, but real job that might spark curiosity. Provide a title and a brief, fun description.
+    7.  **Generate Wacky Jobs**: Generate two 'wackyJobs' suggestions. These should be unusual, specialized, but real jobs that might spark curiosity. Provide a title and a brief, fun description for each.
     8.  **Final Output:** Format the entire response according to the CareerSuggestionsOutputSchema. Ensure there are exactly three career suggestions.
     `,
 });

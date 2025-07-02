@@ -11,6 +11,7 @@ import { CheckCircle, ChevronRight, ArrowLeft, GripVertical } from 'lucide-react
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useToast } from '@/hooks/use-toast';
 
 const SortableItem = ({ id, children }: { id: string, children: React.ReactNode }) => {
     const {
@@ -39,6 +40,7 @@ const SortableItem = ({ id, children }: { id: string, children: React.ReactNode 
 const AssessmentScreen = () => {
     const { userType, responses, setResponses, sessionData, setSessionData, currentContributorId } = useCareerCompass();
     const router = useRouter();
+    const { toast } = useToast();
 
     const [currentQuestionSet, setCurrentQuestionSet] = useState(0);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -127,10 +129,22 @@ const AssessmentScreen = () => {
     };
 
     const handleMultiSelect = (option: string) => {
-        const currentAnswers = responses[activeQuestion.id] || [];
-        const newAnswers = currentAnswers.includes(option)
-            ? currentAnswers.filter((a: string) => a !== option)
-            : [...currentAnswers, option];
+        const currentAnswers: string[] = responses[activeQuestion.id] || [];
+        let newAnswers;
+
+        if (currentAnswers.includes(option)) {
+            newAnswers = currentAnswers.filter((a: string) => a !== option);
+        } else {
+            if (currentAnswers.length < 3) {
+                newAnswers = [...currentAnswers, option];
+            } else {
+                toast({
+                    title: "Maximum selections reached",
+                    description: "You can only select up to 3 options for this question.",
+                });
+                newAnswers = currentAnswers;
+            }
+        }
         setResponses({ ...responses, [activeQuestion.id]: newAnswers });
     };
 
@@ -151,7 +165,7 @@ const AssessmentScreen = () => {
     const getSelectionPrompt = () => {
         switch (activeQuestion.type) {
             case 'multiselect':
-                return "Select all that apply.";
+                return "Select up to 3 options.";
             case 'single':
                 return "Select one option.";
             case 'ranking':
