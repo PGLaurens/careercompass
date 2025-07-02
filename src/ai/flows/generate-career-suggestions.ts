@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Generates personalized career suggestions using AI tools for localization.
@@ -158,7 +159,7 @@ const careerSuggester = ai.definePrompt({
     input: { schema: CareerSuggestionsInputSchema },
     output: { schema: CareerSuggestionsOutputSchema },
     tools: [getSalaryData, getSubjectAvailability],
-    prompt: `You are a world-class career counselor AI named "Career Compass". Your goal is to provide three detailed, inspiring, and actionable career suggestions based on a synthesis of inputs from multiple contributors about a learner. You must also provide a detailed analysis of the learner's personality and work style.
+    prompt: `You are a world-class career counselor AI named "Career Compass". Your goal is to provide three detailed, inspiring, and actionable career suggestions based on a synthesis of inputs from multiple contributors about a learner. You must also provide a detailed analysis of the learner's personality and work style. IMPORTANT: Do not suggest "Entrepreneur" or "Startup Founder" as a career title. Focus on roles that can be pursued within new or existing companies.
 
     **Target Audience:** The output MUST be tailored for a 13-16 year old audience. Use clear, simple, and encouraging language. Avoid jargon and explain complex topics in a relatable way.
 

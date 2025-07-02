@@ -206,28 +206,17 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     <p className="mt-2 text-muted-foreground">{primaryCareer.description}</p>
                     <p className="mt-4 text-sm font-medium text-accent-foreground">{primaryCareer.reasoning}</p>
                   </div>
-                  <div className="space-y-px bg-border">
-                    <div className="bg-card p-4">
-                      <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
+                  
+                  <div className="border-t bg-card p-6">
+                    <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
                         <p>{primaryCareer.salary}</p>
-                      </InfoCard>
-                    </div>
-                    <div className="bg-card p-4">
-                      <InfoCard icon={<Sprout className="h-5 w-5" />} title="Growth Outlook">
-                        <p>{primaryCareer.growth}</p>
-                      </InfoCard>
-                    </div>
-                    <div className="bg-card p-4">
-                      <InfoCard icon={<Building className="h-5 w-5" />} title="Work Environment">
-                        <p>{primaryCareer.workEnvironment}</p>
-                      </InfoCard>
-                    </div>
+                    </InfoCard>
                   </div>
 
                   <div className="border-t bg-card p-6">
                     <InfoCard icon={<BookOpen className="h-5 w-5" />} title="Recommended High School Subjects">
                       <>
-                        <p className="mb-3">Focusing on these subjects will provide a strong foundation for this path:</p>
+                        <p className="mb-3 text-sm">Focusing on these subjects will provide a strong foundation for this path:</p>
                         <div className="flex flex-wrap gap-2">
                           {primaryCareer.subjects?.map((subject) => (
                             <Badge key={subject} variant="secondary">{subject}</Badge>
@@ -236,15 +225,18 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                       </>
                     </InfoCard>
                   </div>
-                  
-                  <div className="border-t bg-card p-6">
-                    <h3 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h3>
-                    <div className="space-y-6">
-                      {primaryCareer.timeline?.map((item, index) => (
-                        <TimelineItem key={index} item={item} isLast={index === primaryCareer.timeline!.length - 1} />
-                      ))}
+
+                   <div className="border-t bg-card p-6">
+                      <InfoCard icon={<Sprout className="h-5 w-5" />} title="Growth Outlook">
+                        <p>{primaryCareer.growth}</p>
+                      </InfoCard>
                     </div>
-                  </div>
+
+                    <div className="border-t bg-card p-6">
+                      <InfoCard icon={<Building className="h-5 w-5" />} title="Work Environment">
+                        <p>{primaryCareer.workEnvironment}</p>
+                      </InfoCard>
+                    </div>
 
                   <div className="border-t bg-card p-6">
                     <h3 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h3>
@@ -256,6 +248,15 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                         </li>
                       ))}
                     </ul>
+                  </div>
+
+                  <div className="border-t bg-card p-6">
+                    <h3 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h3>
+                    <div className="space-y-6">
+                      {primaryCareer.timeline?.map((item, index) => (
+                        <TimelineItem key={index} item={item} isLast={index === primaryCareer.timeline!.length - 1} />
+                      ))}
+                    </div>
                   </div>
 
                   <div className="border-t bg-card p-6">
@@ -387,7 +388,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
               </aside>
             </div>
 
-            <div className="mt-6 space-y-2">
+            <div className="mt-2 space-y-2">
                 <Accordion type="single" collapsible defaultValue="item-1" className="w-full rounded-xl border-2 shadow-none overflow-hidden">
                     <AccordionItem value="item-1" className="border-b-0">
                         <AccordionTrigger className="text-lg font-semibold hover:no-underline p-6 bg-card">
@@ -451,15 +452,18 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     <h3 className="text-lg font-semibold text-foreground">Explore Further</h3>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                    <a href={`https://www.youtube.com/results?search_query=career+videos+for+${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
-                        <Button variant="outline" className="w-full justify-center">Watch Career Videos</Button>
+                <CardContent className="space-y-2">
+                    <a href={`https://www.youtube.com/results?search_query=day+in+the+life+of+a+${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button size="sm" variant="outline" className="w-full justify-center">Watch Career Videos</Button>
                     </a>
-                    <a href={`https://www.coursera.org/search?query=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
-                        <Button variant="outline" className="w-full justify-center">Find Online Courses</Button>
+                    <a href={`https://www.udemy.com/courses/search/?q=${primaryCareerTitle}&sort=price-asc`} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button size="sm" variant="outline" className="w-full justify-center">Find Online Courses</Button>
                     </a>
                      <a href={`https://www.linkedin.com/search/results/people/?keywords=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
-                        <Button variant="outline" className="w-full justify-center">Connect with Professionals</Button>
+                        <Button size="sm" variant="outline" className="w-full justify-center">Connect with Professionals</Button>
+                    </a>
+                     <a href={`https://www.linkedin.com/search/results/companies/?keywords=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button size="sm" variant="outline" className="w-full justify-center">View Companies</Button>
                     </a>
                 </CardContent>
               </Card>
