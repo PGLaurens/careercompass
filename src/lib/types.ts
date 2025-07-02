@@ -63,6 +63,11 @@ export interface FeaturedProfessional {
   bio: string;
 }
 
+export interface WackyJob {
+  title: string;
+  description: string;
+}
+
 export interface CareerResults {
   primaryCareer: Career;
   alternativeCareer: Career;
@@ -77,5 +82,6 @@ export interface CareerResults {
     leadershipStyle: string;
   };
   featuredProfessional: FeaturedProfessional;
+  wackyJob: WackyJob;
   isFallback?: boolean;
 }

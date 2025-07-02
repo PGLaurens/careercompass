@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import type { Career, CareerResults, FeaturedProfessional, TimelineStage } from '@/lib/types';
+import type { Career, CareerResults, FeaturedProfessional, TimelineStage, WackyJob } from '@/lib/types';
 import { useCareerCompass } from '@/context/career-compass-context';
 import { Button } from './ui/button';
 import jsPDF from 'jspdf';
@@ -24,12 +24,14 @@ import {
   Play,
   Loader2,
   TriangleAlert,
+  FlaskConical,
+  Trophy
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import Image from 'next/image';
 import ShareModal from './share-modal';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
@@ -68,7 +70,7 @@ const TimelineItem: React.FC<{ item: TimelineStage; isLast: boolean }> = ({ item
     {item.salary && (
       <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
         <DollarSign className="h-3 w-3" />
-        <span>Est. Salary: {item.salary}</span>
+        <span>Est. Monthly Salary: {item.salary}</span>
       </div>
     )}
   </div>
@@ -79,7 +81,9 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
   const router = useRouter();
   const [showShareModal, setShowShareModal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const { primaryCareer, alternativeCareer, thirdCareer, insights, featuredProfessional } = results;
+  const { primaryCareer, alternativeCareer, thirdCareer, insights, featuredProfessional, wackyJob } = results;
+  
+  const primaryCareerTitle = encodeURIComponent(primaryCareer.title);
 
   const handleStartOver = () => {
     resetSession();
@@ -98,6 +102,14 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 onclone: (doc) => {
                     doc.querySelectorAll('[data-no-print="true"]').forEach((el) => {
                         (el as HTMLElement).style.display = 'none';
+                    });
+                     // Open all accordions for the PDF
+                    doc.querySelectorAll('div[data-state="closed"]').forEach(el => {
+                        const trigger = el.previousSibling as HTMLElement;
+                        if(trigger && trigger.getAttribute('data-state') === 'closed') {
+                             trigger.setAttribute('data-state', 'open');
+                        }
+                        el.setAttribute('data-state', 'open');
                     });
                 },
             });
@@ -138,7 +150,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
     <>
       <div className="min-h-screen bg-background">
         <div id="report-content" className="mx-auto max-w-4xl p-4 md:p-6 lg:p-8">
-          <header className="mb-8">
+          <header className="mb-4">
             <Button variant="ghost" onClick={() => router.back()} data-no-print="true" className="mb-4 -ml-4 text-muted-foreground">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back
             </Button>
@@ -157,7 +169,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
 
           <main>
             {results.isFallback && (
-                <Alert variant="warning" className="mb-8" data-no-print="true">
+                <Alert variant="warning" className="mb-4" data-no-print="true">
                     <TriangleAlert className="h-4 w-4" />
                     <AlertTitle>Displaying Sample Results</AlertTitle>
                     <AlertDescription>
@@ -166,7 +178,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </Alert>
             )}
 
-            <Card className="mb-8 rounded-xl border-2 border-primary/10 bg-primary/5 shadow-none">
+            <Card className="mb-4 rounded-xl border-2 border-primary/10 bg-primary/5 shadow-none">
                 <CardHeader>
                     <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -183,8 +195,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-              <div className="space-y-8 lg:col-span-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div className="space-y-4 lg:col-span-2">
                 <Card className="overflow-hidden rounded-xl border-2 border-primary/20 bg-card shadow-none">
                   <div className="p-6">
                     <Badge variant="default" className="mb-2 bg-primary text-primary-foreground">
@@ -196,7 +208,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                   </div>
                   <div className="space-y-px bg-border">
                     <div className="bg-card p-4">
-                      <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Salary">
+                      <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Monthly Salary">
                         <p>{primaryCareer.salary}</p>
                       </InfoCard>
                     </div>
@@ -281,7 +293,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                             
                             <div className="space-y-px bg-border rounded-lg overflow-hidden">
                                 <div className="bg-card p-4">
-                                  <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Salary">
+                                  <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Monthly Salary">
                                     <p>{career.salary}</p>
                                   </InfoCard>
                                 </div>
@@ -333,29 +345,76 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 </section>
               </div>
 
-              <aside className="space-y-6 lg:col-span-1">
-                <Card className="rounded-xl border-2 shadow-none sticky top-8">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                        <User className="h-6 w-6 text-primary" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-foreground">Featured Professional</h3>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-                    <Image src="https://placehold.co/100x100.png" alt={featuredProfessional.name} data-ai-hint="professional portrait" width={80} height={80} className="rounded-full flex-shrink-0" />
-                    <div>
-                      <p className="font-bold text-foreground">{featuredProfessional.name}</p>
-                      <p className="text-sm font-semibold text-primary">{featuredProfessional.title}</p>
-                      <p className="mt-2 text-xs text-muted-foreground italic">"{featuredProfessional.bio}"</p>
-                    </div>
-                  </CardContent>
-                </Card>
+              <aside className="space-y-4 lg:col-span-1">
+                <Accordion type="single" collapsible defaultValue="item-1" className="w-full rounded-xl border-2 shadow-none">
+                    <AccordionItem value="item-1" className="border-b-0">
+                        <AccordionTrigger className="text-lg font-semibold hover:no-underline px-4">
+                           <div className="flex items-center gap-3">
+                                <User className="h-6 w-6 text-primary" />
+                                <h3 className="text-lg font-semibold text-foreground">Featured Professional</h3>
+                            </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="pt-2 pb-4 px-4">
+                            <div className="flex flex-col items-start gap-2">
+                                <p className="font-bold text-foreground">{featuredProfessional.name}</p>
+                                <p className="text-sm font-semibold text-primary">{featuredProfessional.title}</p>
+                                <p className="mt-2 text-xs text-muted-foreground italic">"{featuredProfessional.bio}"</p>
+                            </div>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+                
+                 <Accordion type="single" collapsible className="w-full rounded-xl border-2 shadow-none">
+                    <AccordionItem value="item-1" className="border-b-0">
+                        <AccordionTrigger className="text-lg font-semibold hover:no-underline px-4">
+                           <div className="flex items-center gap-3">
+                                <FlaskConical className="h-6 w-6 text-primary" />
+                                <h3 className="text-lg font-semibold text-foreground">Wacky Job Idea</h3>
+                            </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="pt-2 pb-4 px-4">
+                            <div className="flex flex-col items-start gap-2">
+                                <p className="font-bold text-foreground">{wackyJob.title}</p>
+                                <p className="mt-1 text-sm text-muted-foreground">{wackyJob.description}</p>
+                            </div>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
               </aside>
             </div>
 
-            <div className="mt-12 space-y-8">
+            <div className="mt-6 space-y-4">
+                <Card className="rounded-xl border-2 shadow-none">
+                    <CardHeader>
+                        <div className="flex items-center gap-3">
+                            <Trophy className="h-6 w-6 text-primary" />
+                            <h3 className="text-lg font-semibold text-foreground">Career Comparison</h3>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Career</TableHead>
+                                    <TableHead>Salary (Monthly)</TableHead>
+                                    <TableHead>Work Environment</TableHead>
+                                    <TableHead>Growth</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {allCareers.map((career, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell className="font-medium">{career.title}</TableCell>
+                                        <TableCell>{career.salary}</TableCell>
+                                        <TableCell>{career.workEnvironment}</TableCell>
+                                        <TableCell>{career.growth}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
+
               <Card className="rounded-xl border-2 shadow-none" data-no-print="true">
                 <CardHeader>
                   <div className="flex items-center gap-3">
@@ -387,9 +446,15 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button variant="outline" className="w-full justify-center">Watch Career Videos</Button>
-                  <Button variant="outline" className="w-full justify-center">Find Online Courses</Button>
-                  <Button variant="outline" className="w-full justify-center">Connect with Professionals</Button>
+                    <a href={`https://www.youtube.com/results?search_query=career+videos+for+${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button variant="outline" className="w-full justify-center">Watch Career Videos</Button>
+                    </a>
+                    <a href={`https://www.coursera.org/search?query=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button variant="outline" className="w-full justify-center">Find Online Courses</Button>
+                    </a>
+                     <a href={`https://www.linkedin.com/search/results/people/?keywords=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button variant="outline" className="w-full justify-center">Connect with Professionals</Button>
+                    </a>
                 </CardContent>
               </Card>
 
