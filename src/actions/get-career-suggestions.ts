@@ -90,6 +90,7 @@ export async function getCareerSuggestionsAction({ responses, country, region, h
         const result = await generateCareerSuggestions(aiInput);
         
         if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.featuredProfessional) {
+            // This case handles if the AI returns a malformed response, even if the call succeeds.
             throw new Error("AI returned insufficient or invalid data.");
         }
 
@@ -107,23 +108,10 @@ export async function getCareerSuggestionsAction({ responses, country, region, h
     } catch (error) {
         console.error("Error in getCareerSuggestionsAction:", error);
         
-        const fallbackResults: CareerResults = {
-            primaryCareer: fallbackCareers[0],
-            alternativeCareer: fallbackCareers[1],
-            thirdCareer: fallbackCareers[2],
-            featuredProfessional: fallbackProfessional,
-            insights: {
-                personalityType: "Determined Achiever",
-                strengths: ["Resilience", "Problem-solving"],
-                motivations: ["Success", "Learning"],
-                workStyle: "Focused and independent.",
-                stressFactors: ["Unclear goals", "Lack of progress"],
-                idealEnvironment: "A place with clear objectives.",
-                leadershipStyle: "Leads by example."
-            },
-            isFallback: true,
-        };
-        
-        return { success: true, data: fallbackResults };
+        // Instead of returning fallback data, return a descriptive error to the client.
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        const userFriendlyError = `Failed to generate AI results. Please ensure your Gemini API key is correctly configured in the .env file and that the Genkit server is running in a separate terminal. (Details: ${errorMessage})`;
+
+        return { success: false, error: userFriendlyError };
     }
 }
