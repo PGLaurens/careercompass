@@ -205,7 +205,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                       Primary Recommendation
                     </Badge>
                     <h2 className="text-2xl font-bold text-foreground">{primaryCareer.title}</h2>
-                    <p className="mt-2 text-muted-foreground">{primaryCareer.description}</p>
+                    <p className="mt-1 text-sm font-semibold text-primary">{primaryCareer.industry}</p>
+                    <p className="mt-4 text-muted-foreground">{primaryCareer.description}</p>
                     <p className="mt-4 text-sm font-medium text-accent-foreground">{primaryCareer.reasoning}</p>
                   </div>
                   
@@ -213,18 +214,6 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                     <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
                         <p>{primaryCareer.salary}</p>
                     </InfoCard>
-                  </div>
-
-                   <div className="border-t bg-card p-6">
-                    <h3 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h3>
-                    <ul className="space-y-2">
-                      {primaryCareer.dailyTasks?.map((task, index) => (
-                        <li key={index} className="flex items-start gap-3 text-sm">
-                          <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                          <span className="text-muted-foreground">{task}</span>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
 
                    <div className="border-t bg-card p-6">
@@ -251,6 +240,18 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                         <p>{primaryCareer.workEnvironment}</p>
                       </InfoCard>
                     </div>
+
+                    <div className="border-t bg-card p-6">
+                      <h3 className="mb-4 font-semibold text-foreground">What You'll Do Daily</h3>
+                      <ul className="space-y-2">
+                        {primaryCareer.dailyTasks?.map((task, index) => (
+                          <li key={index} className="flex items-start gap-3 text-sm">
+                            <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                            <span className="text-muted-foreground">{task}</span>
+                          </li>
+                        ))}
+                      </ul>
+                   </div>
 
                   <div className="border-t bg-card p-6">
                     <h3 className="mb-4 font-semibold text-foreground">Your Journey to Senior Level</h3>
