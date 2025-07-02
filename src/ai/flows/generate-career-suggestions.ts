@@ -89,9 +89,8 @@ const getSalaryData = ai.defineTool(
         "default": { base: 70000, currency: "USD", symbol: "$" }
       };
       
-      const normalizedCountry = country.toLowerCase();
-      const countryKey = Object.keys(baseSalaries).find(k => k.toLowerCase() === normalizedCountry);
-      const countryData = countryKey ? baseSalaries[countryKey] : baseSalaries.default;
+      const countryKey = Object.keys(baseSalaries).find(k => k.toLowerCase() === country.toLowerCase()) || "default";
+      const countryData = baseSalaries[countryKey];
 
       const salary = countryData.base + (careerTitle.length % 5) * 5000;
       const low = Math.round(salary * 0.8 / 1000) * 1000;
@@ -136,7 +135,17 @@ const careerSuggester = ai.definePrompt({
     input: { schema: CareerSuggestionsInputSchema },
     output: { schema: CareerSuggestionsOutputSchema },
     tools: [getSalaryData, getSubjectAvailability],
-    system: `You are a world-class career counselor AI named "Career Compass". Your goal is to provide three detailed, inspiring, and actionable career suggestions based on the user's profile. You must also provide a detailed analysis of the user's personality and work style.
+    prompt: `You are a world-class career counselor AI named "Career Compass". Your goal is to provide three detailed, inspiring, and actionable career suggestions based on the user's profile. You must also provide a detailed analysis of the user's personality and work style.
+
+    **User Profile:**
+    *   Interests: {{#if interests}} {{#each interests}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+    *   Strengths: {{#if strengths}} {{#each strengths}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+    *   Preferred Work Environment: {{{workEnvironment}}}
+    *   Personality Traits: {{#if personalityTraits}} {{#each personalityTraits}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+    *   Values: {{#if values}} {{#each values}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+    *   Learning Style: {{#if learningStyle}} {{#each learningStyle}} {{{this}}}{{#unless @last}}, {{/unless}}{{/each}} {{else}}Not provided{{/if}}
+    *   Location: {{{region}}}, {{{country}}}
+    *   High School: {{{highSchool}}}
 
     **Process:**
 
