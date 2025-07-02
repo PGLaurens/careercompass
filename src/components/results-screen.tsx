@@ -208,7 +208,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                   </div>
                   <div className="space-y-px bg-border">
                     <div className="bg-card p-4">
-                      <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Monthly Salary">
+                      <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
                         <p>{primaryCareer.salary}</p>
                       </InfoCard>
                     </div>
@@ -293,7 +293,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                             
                             <div className="space-y-px bg-border rounded-lg overflow-hidden">
                                 <div className="bg-card p-4">
-                                  <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Monthly Salary">
+                                  <InfoCard icon={<DollarSign className="h-5 w-5" />} title="Expected Annual Salary">
                                     <p>{career.salary}</p>
                                   </InfoCard>
                                 </div>
@@ -396,7 +396,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Career</TableHead>
-                                    <TableHead>Salary (Monthly)</TableHead>
+                                    <TableHead>Salary (Annual)</TableHead>
                                     <TableHead>Work Environment</TableHead>
                                     <TableHead>Growth</TableHead>
                                 </TableRow>

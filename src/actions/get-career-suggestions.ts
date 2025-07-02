@@ -28,7 +28,7 @@ const fallbackCareers: Career[] = [
         ],
         subjects: ["Computer Science", "Mathematics", "Physics"],
         hobbies: ["Building apps or websites", "Contributing to open-source projects", "Robotics clubs"],
-        salary: "$6,700 - $15,000 / month",
+        salary: "$80,400 - $180,000 / year",
         growth: "Consistently high demand",
         workEnvironment: "Tech companies of all sizes, from startups to corporations",
         dailyTasks: ["Writing and testing code", "Collaborating with a team using Git", "Debugging complex issues", "Designing new software features"]
@@ -46,7 +46,7 @@ const fallbackCareers: Career[] = [
         ],
         subjects: ["Art/Design", "Psychology", "Computer Science"],
         hobbies: ["Digital Art & Illustration", "Photography", "Visiting art galleries"],
-        salary: "$4,500 - $10,000 / month",
+        salary: "$54,000 - $120,000 / year",
         growth: "Excellent demand in tech",
         workEnvironment: "Creative, collaborative, tech-forward companies",
         dailyTasks: ["Researching user needs", "Creating wireframes and prototypes", "Presenting designs to stakeholders"]
@@ -64,7 +64,7 @@ const fallbackCareers: Career[] = [
         ],
         subjects: ["Mathematics", "Computer Science", "Statistics"],
         hobbies: ["Competitive programming (e.g., Kaggle)", "Building data visualizations", "Reading about AI advancements"],
-        salary: "$7,500 - $16,500 / month",
+        salary: "$90,000 - $198,000 / year",
         growth: "Extremely high demand",
         workEnvironment: "Tech companies, finance, healthcare, research labs",
         dailyTasks: ["Collecting and cleaning large datasets", "Building machine learning models", "Presenting findings to business leaders"]
