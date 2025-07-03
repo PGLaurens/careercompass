@@ -57,6 +57,45 @@ const WelcomeScreen = () => {
           </CardContent>
         </Card>
       </main>
+
+      <footer className="w-full max-w-4xl mx-auto mt-16 text-left">
+        <div className="grid md:grid-cols-2 gap-8 p-4 border-t pt-8">
+            <div>
+                <h3 className="text-xl font-semibold text-foreground mb-4">How It Works</h3>
+                <ul className="space-y-4 text-muted-foreground">
+                    <li className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Answer questions about yourself and what you love to do.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Optionally, invite parents or mentors to share their unique perspective.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Our AI analyzes all the feedback to create a personalized report just for you.</span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h3 className="text-xl font-semibold text-foreground mb-4">What You'll Get</h3>
+                <ul className="space-y-4 text-muted-foreground">
+                    <li className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Your top 3 career matches with detailed descriptions and timelines.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Personal insights into your strengths, motivations, and ideal work style.</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span>Actionable next steps, including courses to take and professionals to connect with.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+      </footer>
     </div>
   );
 };
