@@ -1,13 +1,23 @@
 'use client';
 
 import React from 'react';
-import { Users, GraduationCap, Compass, CheckCircle } from 'lucide-react';
+import { Users, GraduationCap, Compass, CheckCircle, ListChecks, Sparkles } from 'lucide-react';
 import { useCareerCompass } from '@/context/career-compass-context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 const WelcomeScreen = () => {
   const { setUserType } = useCareerCompass();
+
+  const InfoCard = ({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) => (
+    <div className="flex flex-col items-center space-y-2 text-center p-4 rounded-xl border-2 bg-accent/20 border-border">
+      <div className="text-primary mb-1">{icon}</div>
+      <h4 className="font-semibold text-foreground">{title}</h4>
+      <p className="text-sm text-muted-foreground text-balance">
+        {children}
+      </p>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
@@ -57,21 +67,19 @@ const WelcomeScreen = () => {
           </CardContent>
         </Card>
 
-        <div className="mt-10 space-y-4">
-            <div className="flex flex-col items-center space-y-2 text-center p-5 rounded-xl border-2 bg-warning/10 border-warning/20">
-                <Users className="w-8 h-8 text-warning-foreground mb-1" />
-                <h4 className="font-semibold text-warning-foreground">Better Together</h4>
-                <p className="text-sm text-muted-foreground text-balance">
-                    Invite up to 5 family members or friends to contribute their perspectives for more accurate results
-                </p>
-            </div>
-            <div className="flex flex-col items-center space-y-2 text-center p-5 rounded-xl border-2 bg-success/10 border-success/20">
-                <CheckCircle className="w-8 h-8 text-success-foreground mb-1" />
-                <h4 className="font-semibold text-success-foreground">100% Free</h4>
-                <p className="text-sm text-muted-foreground text-balance">
-                    Complete career guidance with detailed reports at no cost
-                </p>
-            </div>
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <InfoCard icon={<ListChecks className="w-8 h-8" />} title="Quick & Easy">
+                Answer a few fun questions about your interests and strengths to get started.
+            </InfoCard>
+            <InfoCard icon={<Users className="w-8 h-8" />} title="Better Together">
+                Invite family and friends to add their perspectives for more accurate results.
+            </InfoCard>
+            <InfoCard icon={<Sparkles className="w-8 h-8" />} title="In-depth AI Report">
+                Get top career matches, a personalized timeline, and deep insights.
+            </InfoCard>
+            <InfoCard icon={<CheckCircle className="w-8 h-8" />} title="100% Free">
+                Complete career guidance with a detailed, personalized report at no cost.
+            </InfoCard>
         </div>
       </main>
     </div>
