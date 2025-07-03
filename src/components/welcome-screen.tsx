@@ -3,7 +3,7 @@
 import React from 'react';
 import { Users, GraduationCap, Compass, CheckCircle } from 'lucide-react';
 import { useCareerCompass } from '@/context/career-compass-context';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 const WelcomeScreen = () => {
@@ -56,46 +56,24 @@ const WelcomeScreen = () => {
             </div>
           </CardContent>
         </Card>
-      </main>
 
-      <footer className="w-full max-w-4xl mx-auto mt-16 text-left">
-        <div className="grid md:grid-cols-2 gap-8 p-4 border-t pt-8">
-            <div>
-                <h3 className="text-xl font-semibold text-foreground mb-4">How It Works</h3>
-                <ul className="space-y-4 text-muted-foreground">
-                    <li className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Answer questions about yourself and what you love to do.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Optionally, invite parents or mentors to share their unique perspective.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Our AI analyzes all the feedback to create a personalized report just for you.</span>
-                    </li>
-                </ul>
+        <div className="mt-10 space-y-4">
+            <div className="flex flex-col items-center space-y-2 text-center p-5 rounded-xl border-2 bg-warning/10 border-warning/20">
+                <Users className="w-8 h-8 text-warning-foreground mb-1" />
+                <h4 className="font-semibold text-warning-foreground">Better Together</h4>
+                <p className="text-sm text-muted-foreground text-balance">
+                    Invite up to 5 family members or friends to contribute their perspectives for more accurate results
+                </p>
             </div>
-            <div>
-                <h3 className="text-xl font-semibold text-foreground mb-4">What You'll Get</h3>
-                <ul className="space-y-4 text-muted-foreground">
-                    <li className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Your top 3 career matches with detailed descriptions and timelines.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Personal insights into your strengths, motivations, and ideal work style.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Actionable next steps, including courses to take and professionals to connect with.</span>
-                    </li>
-                </ul>
+            <div className="flex flex-col items-center space-y-2 text-center p-5 rounded-xl border-2 bg-success/10 border-success/20">
+                <CheckCircle className="w-8 h-8 text-success-foreground mb-1" />
+                <h4 className="font-semibold text-success-foreground">100% Free</h4>
+                <p className="text-sm text-muted-foreground text-balance">
+                    Complete career guidance with detailed reports at no cost
+                </p>
             </div>
         </div>
-      </footer>
+      </main>
     </div>
   );
 };
