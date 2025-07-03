@@ -10,10 +10,10 @@ const WelcomeScreen = () => {
   const { setUserType } = useCareerCompass();
 
   const InfoCard = ({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) => (
-    <div className="flex flex-col items-center space-y-2 text-center p-4 rounded-xl border-2 bg-accent/20 border-border">
-      <div className="text-primary mb-1">{icon}</div>
-      <h4 className="font-semibold text-foreground">{title}</h4>
-      <p className="text-sm text-muted-foreground text-balance">
+    <div className="flex flex-col items-center space-y-1 text-center p-4 rounded-lg bg-accent/50">
+      <div className="text-primary mb-2">{icon}</div>
+      <h4 className="font-semibold text-sm text-foreground">{title}</h4>
+      <p className="text-xs text-muted-foreground text-balance">
         {children}
       </p>
     </div>
@@ -68,16 +68,16 @@ const WelcomeScreen = () => {
         </Card>
 
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <InfoCard icon={<ListChecks className="w-8 h-8" />} title="Quick & Easy">
+            <InfoCard icon={<ListChecks className="w-6 h-6" />} title="Quick & Easy">
                 Answer a few fun questions about your interests and strengths to get started.
             </InfoCard>
-            <InfoCard icon={<Users className="w-8 h-8" />} title="Better Together">
+            <InfoCard icon={<Users className="w-6 h-6" />} title="Better Together">
                 Invite family and friends to add their perspectives for more accurate results.
             </InfoCard>
-            <InfoCard icon={<Sparkles className="w-8 h-8" />} title="In-depth AI Report">
+            <InfoCard icon={<Sparkles className="w-6 h-6" />} title="In-depth AI Report">
                 Get top career matches, a personalized timeline, and deep insights.
             </InfoCard>
-            <InfoCard icon={<CheckCircle className="w-8 h-8" />} title="100% Free">
+            <InfoCard icon={<CheckCircle className="w-6 h-6" />} title="100% Free">
                 Complete career guidance with a detailed, personalized report at no cost.
             </InfoCard>
         </div>
