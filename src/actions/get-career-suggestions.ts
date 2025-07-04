@@ -90,6 +90,28 @@ const fallbackInsights = {
     leadershipStyle: "Leads by example and empowers others."
 };
 
+interface ActionInput {
+    sessionData: {
+        allResponses: {
+            relationship: string;
+            responses: {
+                personal_interests?: string[];
+                child_interests?: string[];
+                child_strengths?: string[];
+                work_environment?: string;
+                personality_traits?: string[];
+                personality_type?: string[];
+                core_values?: string[];
+                learning_style?: string[];
+            };
+        }[];
+        country: string;
+        region: string;
+        highSchool: string;
+    };
+}
+
+
 export async function getCareerSuggestionsAction({ sessionData }: ActionInput): Promise<{ success: true; data: CareerResults } | { success: false; error: string }> {
     try {
         const contributorResponses = sessionData.allResponses.map(responseSet => {
@@ -115,7 +137,21 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
         const result = await generateCareerSuggestions(aiInput);
         
         if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.featuredProfessional || !result.wackyJobs || result.wackyJobs.length < 2) {
-            throw new Error("AI returned insufficient or invalid data.");
+            // This is a "soft" failure, where the AI returns a malformed response.
+            // We can show a specific message for this.
+            console.warn("AI returned insufficient or invalid data.", result);
+            return {
+                success: true,
+                data: {
+                    primaryCareer: fallbackCareers[0],
+                    alternativeCareer: fallbackCareers[1],
+                    thirdCareer: fallbackCareers[2],
+                    insights: fallbackInsights,
+                    featuredProfessional: fallbackProfessional,
+                    wackyJobs: fallbackWackyJobs,
+                    isFallback: true,
+                },
+            };
         }
 
         const finalResults: CareerResults = {
@@ -131,18 +167,10 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
         return { success: true, data: finalResults };
 
     } catch (error) {
+        // This is a "hard" failure, like a network error or API key issue.
+        // We should not show fallback data here, but instead report the error to the user.
         console.error("Error in getCareerSuggestionsAction:", error);
-        
-        const fallbackResults: CareerResults = {
-            primaryCareer: fallbackCareers[0],
-            alternativeCareer: fallbackCareers[1],
-            thirdCareer: fallbackCareers[2],
-            insights: fallbackInsights,
-            featuredProfessional: fallbackProfessional,
-            wackyJobs: fallbackWackyJobs,
-            isFallback: true,
-        };
-
-        return { success: true, data: fallbackResults };
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred while generating AI suggestions.";
+        return { success: false, error: errorMessage };
     }
 }
