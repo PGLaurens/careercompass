@@ -34,7 +34,7 @@ const TimelineStageSchema = z.object({
     duration: z.string(),
     focus: z.string(),
     details: z.string(),
-    salary: z.string().optional().describe('The expected *monthly* salary range for this career stage, if applicable (e.g., for post-education roles). This should be localized based on the user\'s country.'),
+    salary: z.string().nullable().optional().describe('The expected *monthly* salary range for this career stage, if applicable (e.g., for post-education roles). This should be localized based on the user\'s country.'),
 });
 
 const CareerSchema = z.object({
@@ -191,7 +191,7 @@ const careerSuggester = ai.definePrompt({
         *   \`title\`.
         *   A practical and relatable \`description\`. Include two simple, concrete examples of roles or specializations for all three careers (e.g., for "Software Engineer", you could add "Examples: Mobile App Developer who builds apps for iPhones, or a Cloud Infrastructure Engineer who helps Netflix stream movies smoothly.").
         *   \`reasoning\` and \`matchPercentage\`.
-        *   A detailed \`timeline\` with at least 4-5 stages. For each stage that is a job (e.g., Junior, Mid-Level, Senior), you MUST include a localized *monthly* \`salary\` range. The \`getSalaryData\` tool returns both an 'annual' and a 'monthly' salary range. Use the 'monthly' salary range as a baseline to estimate the progression for different experience levels.
+        *   A detailed \`timeline\` with at least 4-5 stages. For each stage that is a job (e.g., Junior, Mid-Level, Senior), you MUST include a localized *monthly* \`salary\` range. For stages where a salary is not applicable (like High School or University), you MUST set the \`salary\` field to \`null\`. The \`getSalaryData\` tool returns both an 'annual' and a 'monthly' salary range. Use the 'monthly' salary range as a baseline to estimate the progression for different experience levels.
         *   A list of recommended \`subjects\`.
         *   A list of \`hobbies\` that promote a "work hard, play hard" lifestyle. These hobbies should complement the likely lifestyle and interests of someone in that career, providing a healthy work-life balance.
         *   A list of specific, common \`dailyTasks\`, explained in simple terms a teenager can understand (e.g., instead of "Debugging complex issues", say "Finding and fixing bugs in the code, like a detective solving a puzzle.").

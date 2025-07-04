@@ -40,7 +40,7 @@ export interface TimelineStage {
   duration: string;
   focus: string;
   details: string;
-  salary?: string;
+  salary?: string | null;
 }
 
 export interface Career {
