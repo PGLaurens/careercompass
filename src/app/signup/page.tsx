@@ -7,16 +7,16 @@ import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SignupPage() {
-    const { userType, isLoading } = useCareerCompass();
+    const { userType, isLoading, isMounted } = useCareerCompass();
     const router = useRouter();
 
     useEffect(() => {
-        if (!isLoading && !userType) {
+        if (!isLoading && isMounted && !userType) {
             router.push('/');
         }
-    }, [userType, isLoading, router]);
+    }, [userType, isLoading, isMounted, router]);
 
-    if (isLoading || !userType) {
+    if (!isMounted || isLoading || !userType) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-4">
                 <div className="max-w-md w-full mx-auto space-y-6">

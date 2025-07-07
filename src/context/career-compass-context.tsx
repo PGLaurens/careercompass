@@ -15,6 +15,7 @@ interface CareerCompassContextType {
   addContributor: (contributor: Contributor) => void;
   resetSession: () => void;
   isLoading: boolean;
+  isMounted: boolean;
   currentContributorId: string | null;
   setCurrentContributorId: (id: string | null) => void;
   selectContributorForAssessment: (contributorId: string) => void;
@@ -37,10 +38,12 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
   const [sessionData, setSessionData] = useState<SessionData>(initialState);
   const [responses, setResponses] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const [currentContributorId, setCurrentContributorId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
+    setIsMounted(true);
     try {
       const savedState = localStorage.getItem('careerCompassSession');
       if (savedState) {
@@ -59,7 +62,7 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && isMounted) {
       try {
         const stateToSave = JSON.stringify({ userType, sessionData, responses, currentContributorId });
         localStorage.setItem('careerCompassSession', stateToSave);
@@ -67,7 +70,7 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
         console.error("Failed to save state to localStorage", error);
       }
     }
-  }, [userType, sessionData, responses, currentContributorId, isLoading]);
+  }, [userType, sessionData, responses, currentContributorId, isLoading, isMounted]);
   
   const setUserType = (newUserType: UserType) => {
     setUserTypeState(newUserType);
@@ -134,6 +137,7 @@ export const CareerCompassProvider = ({ children }: { children: ReactNode }) => 
       addContributor,
       resetSession,
       isLoading,
+      isMounted,
       currentContributorId,
       setCurrentContributorId,
       selectContributorForAssessment

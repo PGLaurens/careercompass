@@ -11,20 +11,21 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 
 const ResultsPage = () => {
-    const { sessionData, isLoading: isContextLoading } = useCareerCompass();
+    const { sessionData, isLoading: isContextLoading, isMounted } = useCareerCompass();
     const router = useRouter();
     const [results, setResults] = useState<CareerResults | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
-        if (!isContextLoading && !sessionData.sessionId) {
+        if (!isContextLoading && isMounted && !sessionData.sessionId) {
             router.push('/');
         }
-    }, [sessionData, isContextLoading, router]);
+    }, [sessionData, isContextLoading, isMounted, router]);
 
     useEffect(() => {
         // Only run if we have session data, at least one completed response, and no results yet.
+        if (!isMounted) return;
         const completedContributors = sessionData.contributors.filter(c => c.completed).length;
         if (sessionData.sessionId && completedContributors > 0 && !results) {
             startTransition(async () => {
@@ -37,9 +38,9 @@ const ResultsPage = () => {
                 }
             });
         }
-    }, [sessionData, results, router]);
+    }, [sessionData, results, router, isMounted]);
 
-    if (isContextLoading || isPending) {
+    if (!isMounted || isContextLoading || isPending) {
         return (
              <div className="min-h-screen bg-background p-4 md:p-8">
                 <div className="max-w-2xl mx-auto space-y-8">
@@ -77,8 +78,19 @@ const ResultsPage = () => {
         return <ResultsScreen results={results} />;
     }
 
-    if (!sessionData.sessionId) {
-        return null;
+    // This condition might be hit if the user lands here without completing any assessments
+    if (!sessionData.sessionId || sessionData.contributors.filter(c => c.completed).length === 0) {
+        return (
+             <div className="min-h-screen bg-background flex items-center justify-center p-4">
+                <Alert className="max-w-lg">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>No assessment data found</AlertTitle>
+                    <AlertDescription>
+                        Please complete an assessment to see your results.
+                    </AlertDescription>
+                </Alert>
+            </div>
+        )
     }
 
     return (
