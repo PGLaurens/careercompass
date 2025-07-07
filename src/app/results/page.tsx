@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
@@ -8,7 +9,8 @@ import type { CareerResults } from '@/lib/types';
 import ResultsScreen from '@/components/results-screen';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
+import { Terminal, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const ResultsPage = () => {
     const { sessionData, isLoading: isContextLoading, isMounted } = useCareerCompass();
@@ -17,6 +19,19 @@ const ResultsPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
 
+    const fetchResults = () => {
+        setError(null);
+        startTransition(async () => {
+            const actionInput = { sessionData };
+            const result = await getCareerSuggestionsAction(actionInput);
+            if (result.success) {
+                setResults(result.data);
+            } else {
+                setError(result.error);
+            }
+        });
+    };
+
     useEffect(() => {
         if (!isContextLoading && isMounted && !sessionData.sessionId) {
             router.push('/');
@@ -24,23 +39,14 @@ const ResultsPage = () => {
     }, [sessionData, isContextLoading, isMounted, router]);
 
     useEffect(() => {
-        // Only run if we have session data, at least one completed response, and no results yet.
         if (!isMounted) return;
         const completedContributors = sessionData.contributors.filter(c => c.completed).length;
-        if (sessionData.sessionId && completedContributors > 0 && !results) {
-            startTransition(async () => {
-                const actionInput = { sessionData };
-                const result = await getCareerSuggestionsAction(actionInput);
-                if (result.success) {
-                    setResults(result.data);
-                } else {
-                    setError(result.error);
-                }
-            });
+        if (sessionData.sessionId && completedContributors > 0 && !results && !error) {
+            fetchResults();
         }
-    }, [sessionData, results, router, isMounted]);
+    }, [sessionData, results, router, isMounted, error]);
 
-    if (!isMounted || isContextLoading || isPending) {
+    if (!isMounted || isContextLoading || isPending && !error) {
         return (
              <div className="min-h-screen bg-background p-4 md:p-8">
                 <div className="max-w-2xl mx-auto space-y-8">
@@ -66,9 +72,15 @@ const ResultsPage = () => {
                     <Terminal className="h-4 w-4" />
                     <AlertTitle>Error Generating Results</AlertTitle>
                     <AlertDescription>
-                        We encountered an issue while generating your career suggestions. Please try again later.
+                        We encountered an issue while generating your career suggestions. Please try again.
                         <p className="text-xs mt-2">{error}</p>
                     </AlertDescription>
+                    <div className="mt-4 flex justify-end">
+                       <Button onClick={fetchResults} disabled={isPending} variant="secondary">
+                            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Try Again
+                       </Button>
+                    </div>
                 </Alert>
             </div>
         );

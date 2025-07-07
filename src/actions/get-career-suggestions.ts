@@ -1,3 +1,4 @@
+
 'use server';
 
 import { generateCareerSuggestions, type CareerSuggestionsInput } from "@/ai/flows/generate-career-suggestions";
@@ -135,12 +136,6 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
 
         const result = await generateCareerSuggestions(aiInput);
         
-        if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.careerSpotlight || !result.wackyJobs || result.wackyJobs.length < 2) {
-            console.warn("AI returned insufficient or invalid data.", result);
-            const errorMessage = "The AI failed to generate a complete report. Please try again later.";
-            return { success: false, error: errorMessage };
-        }
-
         const finalResults: CareerResults = {
             primaryCareer: result.careerSuggestions[0],
             alternativeCareer: result.careerSuggestions[1],
