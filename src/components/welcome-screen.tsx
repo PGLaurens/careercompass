@@ -46,9 +46,9 @@ const WelcomeScreen = () => {
                 className="group p-6 h-auto border-2 rounded-xl hover:border-primary hover:bg-accent transition-all duration-200 cursor-pointer flex flex-col items-center text-center space-y-2"
               >
                 <Users className="w-10 h-10 text-primary mb-2 transition-transform group-hover:scale-110" />
-                <h3 className="text-lg font-semibold text-foreground">I'm a Parent</h3>
+                <h3 className="text-lg font-semibold text-foreground">I'm a Contributor</h3>
                 <p className="text-muted-foreground text-sm text-balance font-normal normal-case">
-                  Helping my child explore their future.
+                  Helping as a parent, family member, or friend.
                 </p>
               </Button>
 
