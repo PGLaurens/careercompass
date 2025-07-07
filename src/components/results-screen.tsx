@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import type { Career, CareerResults, FeaturedProfessional, TimelineStage, WackyJob } from '@/lib/types';
+import type { Career, CareerResults, CareerSpotlight, TimelineStage, WackyJob } from '@/lib/types';
 import { useCareerCompass } from '@/context/career-compass-context';
 import { Button } from './ui/button';
 import jsPDF from 'jspdf';
@@ -224,21 +224,20 @@ const AlternativeCareersAccordion = ({ careers }: { careers: Career[] }) => (
   </section>
 );
 
-const AsideContent = ({ professional, jobs }: { professional: FeaturedProfessional, jobs: WackyJob[] }) => (
+const AsideContent = ({ spotlight, jobs }: { spotlight: CareerSpotlight, jobs: WackyJob[] }) => (
     <aside className="space-y-4 lg:col-span-1">
         <Accordion type="single" collapsible defaultValue="item-1" className="w-full rounded-xl border-2 shadow-none">
             <AccordionItem value="item-1" className="border-b-0">
                 <AccordionTrigger className="px-4 text-lg font-semibold hover:no-underline">
                     <div className="flex items-center gap-3">
                         <User className="h-6 w-6 text-primary" />
-                        <h3 className="text-lg font-semibold text-foreground">Featured Professional</h3>
+                        <h3 className="text-lg font-semibold text-foreground">Career Spotlight</h3>
                     </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pt-2 pb-4">
                     <div className="flex flex-col items-start gap-2">
-                        <p className="font-bold text-foreground">{professional.name}</p>
-                        <p className="text-sm font-semibold text-primary">{professional.title}</p>
-                        <p className="mt-2 text-xs italic text-muted-foreground">"{professional.bio}"</p>
+                        <p className="text-sm font-semibold text-primary">{spotlight.title}</p>
+                        <p className="mt-2 text-sm italic text-muted-foreground">"{spotlight.story}"</p>
                     </div>
                 </AccordionContent>
             </AccordionItem>
@@ -411,7 +410,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
   const router = useRouter();
   const [showShareModal, setShowShareModal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const { primaryCareer, alternativeCareer, thirdCareer, insights, featuredProfessional, wackyJobs } = results;
+  const { primaryCareer, alternativeCareer, thirdCareer, insights, careerSpotlight, wackyJobs } = results;
   const [selectedCareer, setSelectedCareer] = useState<Career>(primaryCareer);
 
   const country = encodeURIComponent(sessionData.country);
@@ -528,7 +527,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
                 <PrimaryCareerCard career={primaryCareer} />
                 <AlternativeCareersAccordion careers={[alternativeCareer, thirdCareer]} />
               </div>
-              <AsideContent professional={featuredProfessional} jobs={wackyJobs} />
+              <AsideContent spotlight={careerSpotlight} jobs={wackyJobs} />
             </div>
             
             <ComparisonTableCard

@@ -1,12 +1,11 @@
 'use server';
 
 import { generateCareerSuggestions, type CareerSuggestionsInput } from "@/ai/flows/generate-career-suggestions";
-import type { Career, CareerResults, FeaturedProfessional, WackyJob } from "@/lib/types";
+import type { Career, CareerResults, CareerSpotlight, WackyJob } from "@/lib/types";
 
-const fallbackProfessional: FeaturedProfessional = {
-    name: "Alex Doe",
+const fallbackSpotlight: CareerSpotlight = {
     title: "Software Engineer",
-    bio: "Balancing a passion for innovative tech with a love for mountain biking and the great outdoors."
+    story: "One of the best parts of my day is seeing a user's face light up when our new feature works perfectly. After a long week of coding, I love to unwind by hitting the mountain bike trails."
 };
 
 const fallbackWackyJobs: WackyJob[] = [
@@ -27,8 +26,8 @@ const fallbackCareers: Career[] = [
         reasoning: "This is a default suggestion. The AI model could not generate personalized results.",
         matchPercentage: 75,
         timeline: [
-            { stage: "High School", duration: "Years 10-12", focus: "Computer Science, Mathematics, Physics", details: "Build personal projects and contribute to open source." },
-            { stage: "Higher Education", duration: "3-4 years", focus: "Degree in Computer Science or Software Engineering", details: "Gain internship experience to build skills and network." },
+            { stage: "High School", duration: "Years 10-12", focus: "Computer Science, Mathematics, Physics", details: "Build personal projects and contribute to open source.", salary: null },
+            { stage: "Higher Education", duration: "3-4 years", focus: "Degree in Computer Science or Software Engineering", details: "Gain internship experience to build skills and network.", salary: null },
             { stage: "Junior Engineer", duration: "1-2 years", focus: "Writing code, fixing bugs, learning the codebase", details: "Work closely with senior engineers to grow.", salary: "$ 5,000 - 8,000 / month" },
             { stage: "Senior Engineer", duration: "3-5+ years", focus: "Designing systems, mentoring others, and leading projects.", details: "Specialize in an area like cloud computing or AI.", salary: "$ 9,000 - 15,000+ / month" },
         ],
@@ -46,8 +45,8 @@ const fallbackCareers: Career[] = [
         reasoning: "This is a default suggestion. The AI model could not generate personalized results.",
         matchPercentage: 72,
         timeline: [
-            { stage: "High School", duration: "Years 10-12", focus: "Art/Design, Psychology, Computer Science", details: "Build a portfolio of creative projects." },
-            { stage: "Higher Education", duration: "3-4 years", focus: "Degree in Design, Psychology, or HCI", details: "Specialize in Human-Computer Interaction." },
+            { stage: "High School", duration: "Years 10-12", focus: "Art/Design, Psychology, Computer Science", details: "Build a portfolio of creative projects.", salary: null },
+            { stage: "Higher Education", duration: "3-4 years", focus: "Degree in Design, Psychology, or HCI", details: "Specialize in Human-Computer Interaction.", salary: null },
             { stage: "Junior Designer", duration: "1-2 years", focus: "Creating wireframes, mockups, and user flows under supervision.", details: "Conduct user research and usability testing.", salary: "$ 4,000 - 6,500 / month" },
             { stage: "Senior Designer", duration: "3-5+ years", focus: "Leading design projects, mentoring junior designers, and defining product strategy.", details: "Develop and maintain design systems.", salary: "$ 7,000 - 10,000+ / month" }
         ],
@@ -65,8 +64,8 @@ const fallbackCareers: Career[] = [
         reasoning: "This is a default suggestion. The AI model could not generate personalized results.",
         matchPercentage: 70,
         timeline: [
-            { stage: "High School", duration: "Years 10-12", focus: "Advanced Mathematics, Statistics, Computer Science", details: "Participate in math or coding competitions." },
-            { stage: "Undergraduate Degree", duration: "4 years", focus: "Degree in Statistics, Math, CS, or Economics", details: "Work on data analysis projects." },
+            { stage: "High School", duration: "Years 10-12", focus: "Advanced Mathematics, Statistics, Computer Science", details: "Participate in math or coding competitions.", salary: null },
+            { stage: "Undergraduate Degree", duration: "4 years", focus: "Degree in Statistics, Math, CS, or Economics", details: "Work on data analysis projects.", salary: null },
             { stage: "Junior Data Scientist", duration: "1-3 years", focus: "Cleaning data, running analyses, and building basic models.", details: "Learn from senior scientists and domain experts.", salary: "$ 6,000 - 9,000 / month" },
             { stage: "Senior Data Scientist", duration: "4-6+ years", focus: "Developing complex models, leading data strategy, and communicating insights to leadership.", details: "Publish research or speak at conferences.", salary: "$ 10,000 - 16,500+ / month" }
         ],
@@ -136,22 +135,10 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
 
         const result = await generateCareerSuggestions(aiInput);
         
-        if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.featuredProfessional || !result.wackyJobs || result.wackyJobs.length < 2) {
-            // This is a "soft" failure, where the AI returns a malformed response.
-            // We can show a specific message for this.
+        if (!result || !result.careerSuggestions || result.careerSuggestions.length < 3 || !result.careerSpotlight || !result.wackyJobs || result.wackyJobs.length < 2) {
             console.warn("AI returned insufficient or invalid data.", result);
-            return {
-                success: true,
-                data: {
-                    primaryCareer: fallbackCareers[0],
-                    alternativeCareer: fallbackCareers[1],
-                    thirdCareer: fallbackCareers[2],
-                    insights: fallbackInsights,
-                    featuredProfessional: fallbackProfessional,
-                    wackyJobs: fallbackWackyJobs,
-                    isFallback: true,
-                },
-            };
+            const errorMessage = "The AI failed to generate a complete report. Please try again later.";
+            return { success: false, error: errorMessage };
         }
 
         const finalResults: CareerResults = {
@@ -159,7 +146,7 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
             alternativeCareer: result.careerSuggestions[1],
             thirdCareer: result.careerSuggestions[2],
             insights: result.insights,
-            featuredProfessional: result.featuredProfessional,
+            careerSpotlight: result.careerSpotlight,
             wackyJobs: result.wackyJobs,
             isFallback: false,
         };
@@ -167,8 +154,6 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
         return { success: true, data: finalResults };
 
     } catch (error) {
-        // This is a "hard" failure, like a network error or API key issue.
-        // We should not show fallback data here, but instead report the error to the user.
         console.error("Error in getCareerSuggestionsAction:", error);
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred while generating AI suggestions.";
         return { success: false, error: errorMessage };

@@ -40,7 +40,7 @@ export interface TimelineStage {
   duration: string;
   focus: string;
   details: string;
-  salary?: string | null;
+  salary: string | null;
 }
 
 export interface Career {
@@ -58,10 +58,9 @@ export interface Career {
   industry?: string;
 }
 
-export interface FeaturedProfessional {
-  name: string;
+export interface CareerSpotlight {
   title: string;
-  bio: string;
+  story: string;
 }
 
 export interface WackyJob {
@@ -82,7 +81,7 @@ export interface CareerResults {
     idealEnvironment: string;
     leadershipStyle: string;
   };
-  featuredProfessional: FeaturedProfessional;
+  careerSpotlight: CareerSpotlight;
   wackyJobs: WackyJob[];
   isFallback?: boolean;
 }

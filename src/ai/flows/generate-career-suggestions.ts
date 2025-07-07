@@ -34,7 +34,7 @@ const TimelineStageSchema = z.object({
     duration: z.string(),
     focus: z.string(),
     details: z.string(),
-    salary: z.string().nullable().optional().describe('The expected *monthly* salary range for this career stage, if applicable (e.g., for post-education roles). This should be localized based on the user\'s country.'),
+    salary: z.string().nullable().describe('The expected *monthly* salary range for this career stage, if applicable (e.g., for post-education roles). This should be localized based on the user\'s country. For stages where a salary is not applicable (like High School or University), this MUST be `null`.'),
 });
 
 const CareerSchema = z.object({
@@ -63,10 +63,9 @@ const InsightsSchema = z.object({
 });
 
 
-const FeaturedProfessionalSchema = z.object({
-    name: z.string().describe("A realistic-sounding full name for the fictional professional. The name should be culturally and ethnically appropriate for the user's provided country."),
+const CareerSpotlightSchema = z.object({
     title: z.string().describe("The job title of the professional, matching the primary career suggestion."),
-    bio: z.string().describe("A short, inspiring bio (1-2 sentences) about how this professional balances their career with their passions or hobbies."),
+    story: z.string().describe("A short, inspiring, first-person story (2-3 sentences) from the perspective of someone in this role. It should describe a rewarding moment or a typical 'day in the life' experience, and hint at how they balance work with personal passions. Example: 'One of the best parts of my day is seeing a user's face light up when our new feature works perfectly. After a long week of coding, I love to unwind by hitting the mountain bike trails.' Do NOT invent a name for the person."),
 });
 
 const WackyJobSchema = z.object({
@@ -78,7 +77,7 @@ const WackyJobSchema = z.object({
 const CareerSuggestionsOutputSchema = z.object({
   careerSuggestions: z.array(CareerSchema).length(3).describe('A list of exactly 3 career suggestions, from best match to third best match.'),
   insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers. Follow the punctuation rules in the InsightsSchema descriptions: end all single-string fields with a period, but do not add periods to items in string arrays."),
-  featuredProfessional: FeaturedProfessionalSchema.describe("A profile of a fictional professional representing the primary career path."),
+  careerSpotlight: CareerSpotlightSchema.describe("A 'day in the life' spotlight for the primary career suggestion. This should be a short, first-person story, NOT a bio with a name."),
   wackyJobs: z.array(WackyJobSchema).length(2).describe("A list of exactly 2 unusual, and interesting job suggestions to spark curiosity."),
 });
 export type CareerSuggestionsOutput = z.infer<typeof CareerSuggestionsOutputSchema>;
@@ -199,7 +198,7 @@ const careerSuggester = ai.definePrompt({
     5.  **Use Tools for Localization (IMPORTANT):**
         *   For EACH of the three career suggestions, you MUST use the \`getSalaryData\` tool to get a localized salary. The tool returns an object with 'annual' and 'monthly' properties. You MUST use the 'annual' property for the main \`salary\` field of the career. The 'monthly' property will serve as the baseline for your timeline salary estimates.
         *   After generating the ideal list of recommended \`subjects\` for the PRIMARY career suggestion, you MUST use the \`getSubjectAvailability\` tool to check which are available. In the final output, only include the subjects the tool returns as 'available' in the \`subjects\` array for that primary career. For the other two careers, you can list the ideal subjects without verification.
-    6.  **Generate a Featured Professional**: For the primary career, create a fictional \`featuredProfessional\` profile. This must be a believable and inspiring persona. Generate a UNIQUE fictional name that is culturally and ethnically appropriate for the user's country ({{{country}}}), region ({{{region}}}), and even high school ({{{highSchool}}}) to make the persona feel authentic and local. The job title must match the primary career. Write a short, inspiring bio about how this professional balances their demanding career with a hobby, embodying the 'work hard, play hard' philosophy. DO NOT use the same name in different reports.
+    6.  **Generate a Career Spotlight**: For the primary career, create a fictional \`careerSpotlight\` object. Instead of a bio with a name, you MUST write a short, inspiring, first-person story (2-3 sentences) from the perspective of someone in this role. **DO NOT INVENT A NAME.** The story should describe a rewarding moment or a 'day in the life' experience and hint at how they balance work with a personal passion, embodying the 'work hard, play hard' philosophy. The goal is to make the career feel tangible and human without creating a fake persona. For example: "One of the best parts of my day is seeing a user's face light up when our new feature works perfectly. After a long week of coding, I love to unwind by hitting the mountain bike trails."
     7.  **Generate Wacky Jobs**: Generate two \`wackyJobs\` suggestions. These should be unusual, specialized, but real jobs that might spark curiosity. Provide a title and a brief, fun description for each.
     8.  **Final Output:** Format the entire response according to the CareerSuggestionsOutputSchema. Ensure there are exactly three career suggestions.
     `,
