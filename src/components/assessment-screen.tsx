@@ -98,11 +98,13 @@ const AssessmentScreen = () => {
     const handleMultiSelect = (option: string) => {
         const currentAnswers: string[] = responses[activeQuestion.id] || [];
         let newAnswers;
+        const isRanking = activeQuestion.type === 'ranking';
 
         if (currentAnswers.includes(option)) {
             newAnswers = currentAnswers.filter((a: string) => a !== option);
         } else {
-            if (currentAnswers.length < 3) {
+            // Only apply the 3-item limit to multiselect, not ranking questions
+            if (isRanking || currentAnswers.length < 3) {
                 newAnswers = [...currentAnswers, option];
             } else {
                 toast({
