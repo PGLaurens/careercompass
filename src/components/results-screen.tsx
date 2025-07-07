@@ -34,6 +34,8 @@ import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import ShareModal from './share-modal';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { Label } from './ui/label';
 
 interface ResultsScreenProps {
   results: CareerResults;
@@ -265,7 +267,15 @@ const AsideContent = ({ professional, jobs }: { professional: FeaturedProfession
     </aside>
 );
 
-const ComparisonTableCard = ({ careers }: { careers: Career[] }) => (
+const ComparisonTableCard = ({
+  careers,
+  selectedCareer,
+  onCareerSelect,
+}: {
+  careers: Career[];
+  selectedCareer: Career;
+  onCareerSelect: (career: Career) => void;
+}) => (
     <div className="mt-4 space-y-4">
         <Accordion type="single" collapsible defaultValue="item-1" className="w-full overflow-hidden rounded-xl border-2 shadow-none">
             <AccordionItem value="item-1" className="border-b-0">
@@ -276,26 +286,43 @@ const ComparisonTableCard = ({ careers }: { careers: Career[] }) => (
                     </div>
                 </AccordionTrigger>
                 <AccordionContent className="bg-card px-6 pt-0 pb-6">
-                    <Table className="text-xs">
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Career</TableHead>
-                                <TableHead>Salary (Annual)</TableHead>
-                                <TableHead>Work Environment</TableHead>
-                                <TableHead>Growth</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {careers.map((career, index) => (
-                                <TableRow key={index}>
-                                    <TableCell className="font-medium">{career.title}</TableCell>
-                                    <TableCell>{career.salary}</TableCell>
-                                    <TableCell>{career.workEnvironment}</TableCell>
-                                    <TableCell>{career.growth}</TableCell>
+                    <p className="text-sm text-muted-foreground mb-4">Select the career that interests you most to update the "Explore Further" links.</p>
+                    <RadioGroup
+                        value={selectedCareer.title}
+                        onValueChange={(title) => {
+                            const newSelectedCareer = careers.find((c) => c.title === title);
+                            if (newSelectedCareer) {
+                                onCareerSelect(newSelectedCareer);
+                            }
+                        }}
+                    >
+                        <Table className="text-xs">
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-12"></TableHead>
+                                    <TableHead>Career</TableHead>
+                                    <TableHead>Salary (Annual)</TableHead>
+                                    <TableHead>Work Environment</TableHead>
+                                    <TableHead>Growth</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {careers.map((career, index) => (
+                                    <TableRow key={index} className="cursor-pointer" onClick={() => onCareerSelect(career)}>
+                                        <TableCell>
+                                            <RadioGroupItem value={career.title} id={`career-${index}`} />
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            <Label htmlFor={`career-${index}`}>{career.title}</Label>
+                                        </TableCell>
+                                        <TableCell>{career.salary}</TableCell>
+                                        <TableCell>{career.workEnvironment}</TableCell>
+                                        <TableCell>{career.growth}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </RadioGroup>
                 </AccordionContent>
             </AccordionItem>
         </Accordion>
@@ -306,74 +333,77 @@ const ActionCards = ({
   onShareClick,
   onDownloadClick,
   isDownloading,
-  primaryCareerTitle,
-  primaryCareerIndustry,
+  selectedCareer,
   country
 }: {
   onShareClick: () => void;
   onDownloadClick: () => void;
   isDownloading: boolean;
-  primaryCareerTitle: string;
-  primaryCareerIndustry: string;
+  selectedCareer: Career;
   country: string;
-}) => (
-  <div className="mt-4 space-y-4" data-no-print="true">
-    <Card className="rounded-xl border-2 shadow-none">
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <Share2 className="h-6 w-6 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Share & Save</h3>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <Button onClick={onShareClick} className="w-full">
-          <UserPlus className="mr-2 h-4 w-4" />
-          Invite More Contributors
-        </Button>
-        <Button variant="secondary" className="w-full" onClick={onDownloadClick} disabled={isDownloading}>
-          {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-          {isDownloading ? 'Generating PDF...' : 'Download Full Report'}
-        </Button>
-      </CardContent>
-    </Card>
+}) => {
+    const careerTitle = encodeURIComponent(selectedCareer.title);
+    const careerIndustry = encodeURIComponent(selectedCareer.industry || selectedCareer.title);
 
-    <Card className="rounded-xl border-2 shadow-none">
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <Play className="h-6 w-6 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Explore Further</h3>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <a href={`https://www.youtube.com/results?search_query=day+in+the+life+of+a+${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
-          <Button size="sm" variant="outline" className="w-full justify-center">Watch Career Videos</Button>
-        </a>
-        <a href={`https://www.udemy.com/courses/search/?q=${primaryCareerTitle}&sort=price-asc`} target="_blank" rel="noopener noreferrer" className="block">
-          <Button size="sm" variant="outline" className="w-full justify-center">Find Online Courses</Button>
-        </a>
-        <a href={`https://www.linkedin.com/search/results/people/?keywords=${primaryCareerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
-          <Button size="sm" variant="outline" className="w-full justify-center">Connect with Professionals</Button>
-        </a>
-        <a href={`https://www.linkedin.com/search/results/companies/?keywords=${primaryCareerIndustry}&location=${country}`} target="_blank" rel="noopener noreferrer" className="block">
-          <Button size="sm" variant="outline" className="w-full justify-center">View Companies</Button>
-        </a>
-      </CardContent>
-    </Card>
+    return (
+      <div className="mt-4 space-y-4" data-no-print="true">
+        <Card className="rounded-xl border-2 shadow-none">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <Share2 className="h-6 w-6 text-primary" />
+              <h3 className="text-lg font-semibold text-foreground">Share & Save</h3>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button onClick={onShareClick} className="w-full">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Invite More Contributors
+            </Button>
+            <Button variant="secondary" className="w-full" onClick={onDownloadClick} disabled={isDownloading}>
+              {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+              {isDownloading ? 'Generating PDF...' : 'Download Full Report'}
+            </Button>
+          </CardContent>
+        </Card>
 
-    <Card className="rounded-xl border-2 bg-accent/50 text-center shadow-none">
-      <CardContent className="p-6">
-        <h3 className="text-lg font-semibold">Ready for the Next Step?</h3>
-        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          Start building your future today with the right subject choices and career preparation.
-        </p>
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button variant="default">Get Subject Planning Guide</Button>
-          <Button variant="outline" onClick={onShareClick}>Add More Perspectives</Button>
-        </div>
-      </CardContent>
-    </Card>
-  </div>
-);
+        <Card className="rounded-xl border-2 shadow-none">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <Play className="h-6 w-6 text-primary" />
+              <h3 className="text-lg font-semibold text-foreground">Explore "{selectedCareer.title}"</h3>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <a href={`https://www.youtube.com/results?search_query=day+in+the+life+of+a+${careerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+              <Button size="sm" variant="outline" className="w-full justify-center">Watch Career Videos</Button>
+            </a>
+            <a href={`https://www.udemy.com/courses/search/?q=${careerTitle}&sort=price-asc`} target="_blank" rel="noopener noreferrer" className="block">
+              <Button size="sm" variant="outline" className="w-full justify-center">Find Online Courses</Button>
+            </a>
+            <a href={`https://www.linkedin.com/search/results/people/?keywords=${careerTitle}`} target="_blank" rel="noopener noreferrer" className="block">
+              <Button size="sm" variant="outline" className="w-full justify-center">Connect with Professionals</Button>
+            </a>
+            <a href={`https://www.linkedin.com/search/results/companies/?keywords=${careerIndustry}&location=${country}`} target="_blank" rel="noopener noreferrer" className="block">
+              <Button size="sm" variant="outline" className="w-full justify-center">View Companies</Button>
+            </a>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-xl border-2 bg-accent/50 text-center shadow-none">
+          <CardContent className="p-6">
+            <h3 className="text-lg font-semibold">Ready for the Next Step?</h3>
+            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+              Start building your future today with the right subject choices and career preparation.
+            </p>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Button variant="default">Get Subject Planning Guide</Button>
+              <Button variant="outline" onClick={onShareClick}>Add More Perspectives</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+};
 
 
 const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
@@ -382,9 +412,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const { primaryCareer, alternativeCareer, thirdCareer, insights, featuredProfessional, wackyJobs } = results;
-  
-  const primaryCareerTitle = encodeURIComponent(primaryCareer.title);
-  const primaryCareerIndustry = encodeURIComponent(primaryCareer.industry || primaryCareer.title);
+  const [selectedCareer, setSelectedCareer] = useState<Career>(primaryCareer);
+
   const country = encodeURIComponent(sessionData.country);
 
   const handleStartOver = () => {
@@ -502,14 +531,17 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
               <AsideContent professional={featuredProfessional} jobs={wackyJobs} />
             </div>
             
-            <ComparisonTableCard careers={allCareers} />
+            <ComparisonTableCard
+              careers={allCareers}
+              selectedCareer={selectedCareer}
+              onCareerSelect={setSelectedCareer}
+            />
 
             <ActionCards
               onShareClick={() => setShowShareModal(true)}
               onDownloadClick={handleDownload}
               isDownloading={isDownloading}
-              primaryCareerTitle={primaryCareerTitle}
-              primaryCareerIndustry={primaryCareerIndustry}
+              selectedCareer={selectedCareer}
               country={country}
             />
             
