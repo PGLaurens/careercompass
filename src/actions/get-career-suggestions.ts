@@ -142,8 +142,6 @@ export async function getCareerSuggestionsAction({ sessionData }: ActionInput): 
             alternativeCareer: result.careerSuggestions[1],
             thirdCareer: result.careerSuggestions[2],
             insights: result.insights,
-            careerSpotlight: result.careerSpotlight,
-            wackyJobs: result.wackyJobs,
             isFallback: false,
         };
 
