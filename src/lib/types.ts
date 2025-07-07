@@ -60,6 +60,7 @@ export interface Career {
 
 export interface CareerSpotlight {
   title: string;
+  location: string;
   story: string;
 }
 

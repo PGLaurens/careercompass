@@ -6,6 +6,7 @@ import type { Career, CareerResults, CareerSpotlight, WackyJob } from "@/lib/typ
 
 const fallbackSpotlight: CareerSpotlight = {
     title: "Software Engineer",
+    location: "Your Region",
     story: "One of the best parts of my day is seeing a user's face light up when our new feature works perfectly. After a long week of coding, I love to unwind by hitting the mountain bike trails."
 };
 

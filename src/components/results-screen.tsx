@@ -236,7 +236,7 @@ const AsideContent = ({ spotlight, jobs }: { spotlight: CareerSpotlight, jobs: W
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pt-2 pb-4">
                     <div className="flex flex-col items-start gap-2">
-                        <p className="text-sm font-semibold text-primary">{spotlight.title}</p>
+                        <p className="text-sm font-semibold text-primary">{spotlight.title} - {spotlight.location}</p>
                         <p className="mt-2 text-sm italic text-muted-foreground">"{spotlight.story}"</p>
                     </div>
                 </AccordionContent>
