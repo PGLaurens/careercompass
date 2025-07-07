@@ -333,16 +333,19 @@ const ActionCards = ({
   onDownloadClick,
   isDownloading,
   selectedCareer,
-  country
+  country,
+  region
 }: {
   onShareClick: () => void;
   onDownloadClick: () => void;
   isDownloading: boolean;
   selectedCareer: Career;
   country: string;
+  region: string;
 }) => {
     const careerTitle = encodeURIComponent(selectedCareer.title);
     const careerIndustry = encodeURIComponent(selectedCareer.industry || selectedCareer.title);
+    const universitySearchQuery = `https://www.google.com/search?q=university+courses+for+${careerTitle}+in+${region}+${country}`;
 
     return (
       <div className="mt-4 space-y-4" data-no-print="true">
@@ -395,7 +398,9 @@ const ActionCards = ({
               Start building your future today with the right subject choices and career preparation.
             </p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <Button variant="default">Get Subject Planning Guide</Button>
+              <a href={universitySearchQuery} target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="default" className="w-full">Find University Courses</Button>
+              </a>
               <Button variant="outline" onClick={onShareClick}>Add More Perspectives</Button>
             </div>
           </CardContent>
@@ -414,6 +419,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
   const [selectedCareer, setSelectedCareer] = useState<Career>(primaryCareer);
 
   const country = encodeURIComponent(sessionData.country);
+  const region = encodeURIComponent(sessionData.region);
 
   const handleStartOver = () => {
     resetSession();
@@ -542,6 +548,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
               isDownloading={isDownloading}
               selectedCareer={selectedCareer}
               country={country}
+              region={region}
             />
             
             <div className="mt-8 text-center" data-no-print="true">
