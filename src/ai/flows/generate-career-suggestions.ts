@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview Generates personalized career suggestions using AI tools for localization.
