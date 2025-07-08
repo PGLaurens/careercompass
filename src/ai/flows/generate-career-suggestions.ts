@@ -61,10 +61,22 @@ const InsightsSchema = z.object({
     leadershipStyle: z.string().describe("A description of the user's potential leadership style. This MUST end with a period."),
 });
 
+const CareerSpotlightSchema = z.object({
+    title: z.string().describe('The job title of the professional.'),
+    location: z.string().describe('The city or region of the professional. This must match the user\'s region.'),
+    story: z.string().describe('A short, inspiring, first-person story (about 2-3 sentences) about a rewarding experience in this career. It should not mention a name, but should connect a personal passion to a work outcome (e.g., "I love solving puzzles, so it was incredibly rewarding to finally crack the bug that was affecting our users. I love knowing my work helps people have a smoother day.").'),
+});
+
+const WackyJobSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+});
 
 const CareerSuggestionsOutputSchema = z.object({
   careerSuggestions: z.array(CareerSchema).length(3).describe('A list of exactly 3 career suggestions, from best match to third best match.'),
   insights: InsightsSchema.describe("A summary of the user's personality and work style based on their answers. Follow the punctuation rules in the InsightsSchema descriptions: end all single-string fields with a period, but do not add periods to items in string arrays."),
+  careerSpotlight: CareerSpotlightSchema.describe('A spotlight on a professional in the primary career path.'),
+  wackyJobs: z.array(WackyJobSchema).length(2).describe('A list of exactly 2 creative and unusual job ideas related to the user\'s interests.'),
 });
 export type CareerSuggestionsOutput = z.infer<typeof CareerSuggestionsOutputSchema>;
 
@@ -171,7 +183,10 @@ const careerSuggester = ai.definePrompt({
     **Process:**
 
     1.  **Synthesize User Profile:** Deeply analyze and synthesize the inputs from ALL contributors, applying the weighting instructions above. Look for common themes and also note interesting differences in perspective.
-    2.  **Generate Insights:** First, create the 'insights' object. Synthesize the inputs into a cohesive personality profile, including strengths, motivations, and ideal work style. **Important Punctuation Rule:** For any fields that are single strings (like 'personalityType' or 'workStyle'), ensure the string ends with a period. For fields that are arrays of strings (like 'strengths' or 'motivations'), do NOT add a period to each individual item in the array.
+    2.  **Generate Insights & Spotlights:** First, create the 'insights', 'careerSpotlight' and 'wackyJobs' objects.
+        *   For 'insights', synthesize the inputs into a cohesive personality profile. **Important Punctuation Rule:** For any fields that are single strings (like 'personalityType' or 'workStyle'), ensure the string ends with a period. For fields that are arrays of strings (like 'strengths' or 'motivations'), do NOT add a period to each individual item in the array.
+        *   For 'careerSpotlight', create an inspiring story for the **primary career**. The 'location' MUST be the user's 'region'. Do NOT invent a fake person's name. The story should be first-person ("I" or "my") and focus on a rewarding moment that connects a personal passion to a work outcome.
+        *   For 'wackyJobs', come up with two fun, creative, and slightly unusual job ideas that connect to the user's interests.
     3.  **Brainstorm Careers:** Based on the synthesized profile, brainstorm a list of potential careers. Select the top three best matches.
     4.  **Flesh out each career suggestion:** For EACH of the three careers, you must generate all fields in the CareerSchema. It is **critical** that all text is tailored to a 13-16 year old. This includes:
         *   \`title\`.
