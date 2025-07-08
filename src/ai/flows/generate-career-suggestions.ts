@@ -143,6 +143,7 @@ const getSubjectAvailability = ai.defineTool(
 
 const careerSuggester = ai.definePrompt({
     name: 'careerSuggester',
+    model: 'googleai/gemini-1.5-flash-latest',
     input: { schema: CareerSuggestionsInputSchema },
     output: { schema: CareerSuggestionsOutputSchema },
     tools: [getSalaryData, getSubjectAvailability],
