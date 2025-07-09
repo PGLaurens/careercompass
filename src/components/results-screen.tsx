@@ -334,7 +334,8 @@ const ActionCards = ({
   isDownloading,
   selectedCareer,
   country,
-  region
+  region,
+  highSchool
 }: {
   onShareClick: () => void;
   onDownloadClick: () => void;
@@ -342,10 +343,13 @@ const ActionCards = ({
   selectedCareer: Career;
   country: string;
   region: string;
+  highSchool: string;
 }) => {
     const careerTitle = encodeURIComponent(selectedCareer.title);
     const careerIndustry = encodeURIComponent(selectedCareer.industry || selectedCareer.title);
     const universitySearchQuery = `https://www.google.com/search?q=university+courses+for+${careerTitle}+in+${region}+${country}`;
+    const nextYear = new Date().getFullYear() + 1;
+    const scholarshipSearchQuery = `https://www.google.com/search?q=Scholarships+or+bursaries+for+${careerTitle}+students+in+${highSchool}%2C+${region}%2C+${country}+${nextYear}`;
 
     return (
       <div className="mt-4 space-y-4" data-no-print="true">
@@ -401,6 +405,9 @@ const ActionCards = ({
               <a href={universitySearchQuery} target="_blank" rel="noopener noreferrer" className="block">
                 <Button variant="default" className="w-full">Find University Courses</Button>
               </a>
+              <a href={scholarshipSearchQuery} target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="outline" className="w-full">Find Scholarships/Bursaries</Button>
+              </a>
               <Button variant="outline" onClick={onShareClick}>Add More Perspectives</Button>
             </div>
           </CardContent>
@@ -420,6 +427,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
 
   const country = encodeURIComponent(sessionData.country);
   const region = encodeURIComponent(sessionData.region);
+  const highSchool = encodeURIComponent(sessionData.highSchool);
 
   const handleStartOver = () => {
     resetSession();
@@ -549,6 +557,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ results }) => {
               selectedCareer={selectedCareer}
               country={country}
               region={region}
+              highSchool={highSchool}
             />
             
             <div className="mt-8 text-center" data-no-print="true">
